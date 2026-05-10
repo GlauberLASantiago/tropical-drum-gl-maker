@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tropical Drum GL (Groove Lab) Maker</title>
+<style>
+:root{--bg:#0f1115;--panel:#181b22;--panel2:#232833;--text:#f2f4f8;--muted:#a9b1c0;--line:#343b49;--accent:#77d7a8;--accent2:#74a7ff;--danger:#ff6f7d;--shadow:0 18px 55px rgba(0,0,0,.36);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(116,167,255,.18),transparent 30rem),radial-gradient(circle at 85% 8%,rgba(119,215,168,.15),transparent 26rem),var(--bg);color:var(--text)}
+header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);letter-spacing:-.035em}p{color:var(--muted);line-height:1.35;margin:6px 0}.layout{width:100%;padding:8px 16px 20px;display:grid;grid-template-columns:285px minmax(0,1fr);gap:12px;align-items:start}.panel{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:var(--shadow)}
+.sidebar{padding:10px;position:sticky;top:8px}.main{min-width:0}.below-seq{margin-top:10px;display:grid;grid-template-columns:1.15fr .85fr .85fr;gap:10px;align-items:start}.box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:9px;margin-bottom:8px}.title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}.row{display:flex;gap:6px;flex-wrap:wrap}.row>*{flex:1 1 96px}label{display:block;color:var(--muted);font-size:12px;margin:0 0 4px}input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 8px;outline:none}.btn{border:1px solid rgba(255,255,255,.1);border-radius:10px;background:var(--panel2);color:var(--text);padding:7px 9px;cursor:pointer}.btn:hover{background:#2a2f3b}.btn.primary{background:linear-gradient(180deg,#83e9b5,#53b983);color:#07140e;font-weight:800;border:0}.btn.blue{background:linear-gradient(180deg,#8db9ff,#5b8ee6);color:#061225;font-weight:800;border:0}.btn.danger{background:rgba(255,111,125,.13);border-color:rgba(255,111,125,.28);color:#ffd1d6}.btn.small{font-size:12px;padding:6px 8px}.btn.full{width:100%}.patterns{display:grid;grid-template-columns:1fr;gap:6px;max-height:380px;overflow:auto}.pattern{padding:7px 8px;background:var(--panel2);border:1px solid transparent;border-radius:10px;cursor:pointer}.pattern.active{border-color:var(--accent);background:rgba(119,215,168,.12)}.pattern b{display:block;font-size:13px}.pattern span{font-size:11px;color:var(--muted)}.status{font-size:12px;color:#dce9ff;background:rgba(116,167,255,.1);border:1px solid rgba(116,167,255,.18);border-radius:10px;padding:7px 8px;margin-top:6px}
+.seq-card{padding:10px}.seq-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.seq-head h2{font-size:16px;margin:0}.hint{font-size:12px;color:var(--muted)}.sequencer-wrap{width:100%;overflow:auto}.sequencer{width:100%;min-width:760px;display:grid;grid-template-columns:145px repeat(var(--steps),minmax(20px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#11141b}.corner,.step,.label,.cell{min-height:29px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}.corner,.step{background:#171b24;color:var(--muted);font-size:11px}.step.beat{color:var(--text);font-weight:800;background:rgba(255,255,255,.045)}.label{justify-content:space-between;padding:0 7px;background:#171b24;position:sticky;left:0;z-index:2;font-size:12px}.label span{color:var(--muted);font-size:10px}.cell{background:#151821;cursor:pointer}.cell.beat{background:#1a1f2a}.cell:hover{box-shadow:inset 0 0 0 2px rgba(116,167,255,.35)}.cell.on:after{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--accent),#48b67d);box-shadow:0 0 14px rgba(119,215,168,.35)}.cell.accent:after{background:linear-gradient(180deg,var(--accent2),#5b8ee6);transform:scale(1.08)}.bottom{margin-top:10px}.credits{text-align:center;padding:16px;color:#d5dae5;font-size:13px}.credits a{color:#d5f8ff;text-decoration:none;border-bottom:1px solid rgba(213,248,255,.45)}
+@media(max-width:1100px){.below-seq{grid-template-columns:1fr 1fr}}@media(max-width:900px){.layout{grid-template-columns:1fr;padding:8px}.sidebar{position:static}.below-seq{grid-template-columns:1fr}.sequencer{min-width:680px}}
+</style>
+</head>
+<body>
+<header>
+<h1>Tropical Drum GL (Groove Lab) Maker</h1>
+<p>Sequenciador visual para criar ritmos de bateria e exportar o plugin MuseScore <strong>Tropical Drum GL (Groove Lab)</strong>.</p>
+</header>
+<div class="layout">
+<aside class="panel sidebar">
+  <div class="box">
+    <div class="title">Ritmos</div>
+    <button class="btn primary full" id="addPatternBtn">+ Novo ritmo</button>
+    <div class="patterns" id="patternList" style="margin-top:6px"></div>
+  </div>
+</aside>
+<main class="main">
+  <section class="panel seq-card">
+    <div class="seq-head">
+      <h2>Sequenciador</h2>
+      <div class="hint">De baixo para cima: bumbo, borda, caixa, chimbais, tons e pratos. A grade representa ataques; o plugin normaliza as durações.</div>
+    </div>
+    <div class="sequencer-wrap"><div id="sequencer" class="sequencer"></div></div>
+  </section>
+  <section class="below-seq">
+    <div class="panel box">
+      <div class="title">Configuração</div>
+      <div class="row">
+        <div><label>Nome</label><input id="patternName" placeholder="Ex.: Rock 1"></div>
+        <div><label>Compassos</label><select id="barsSelect"><option value="1">1</option><option value="2">2</option></select></div>
+        <div><label>Fórmula</label><select id="timeSigSelect"><option value="4/4">4/4</option><option value="3/4">3/4</option><option value="2/4">2/4</option><option value="6/8">6/8</option></select></div>
+        <div><label>Célula</label><select id="resolutionSelect"><option value="16">Semicolcheia</option><option value="8">Colcheia</option></select></div>
+      </div>
+      <div class="status" id="status">Clique nas células. Shift + clique cria acento.</div>
+    </div>
+    <div class="panel box">
+      <div class="title">Edição rápida</div>
+      <div class="row">
+        <button class="btn small" id="duplicatePatternBtn">Duplicar</button>
+        <button class="btn small danger" id="deletePatternBtn">Excluir</button>
+        <button class="btn small" id="clearBtn">Limpar</button>
+        <button class="btn small" id="fillHihatBtn">Chimbal 8ªs</button>
+        <button class="btn small" id="basicBeatBtn">Beat básico</button>
+      </div>
+    </div>
+    <div class="panel box">
+      <div class="title">Importar / Exportar</div>
+      <input id="importFile" type="file" accept=".qml,.txt" style="display:none">
+      <div class="row">
+        <button class="btn small" id="importAddBtn">Importar adicionando</button>
+        <button class="btn small" id="importReplaceBtn">Importar substituindo</button>
+        <button class="btn blue small" id="downloadBtn">Baixar .qml</button>
+        <button class="btn small" id="copyBtn">Copiar código</button>
+      </div>
+    </div>
+  </section>
+  <section class="panel box bottom">
+    <div class="title">Mapa de bateria</div>
+    <p class="hint">O plugin usa pitches MIDI GM. Em pauta de bateria do MuseScore, o resultado depende do mapa/percussão do instrumento selecionado.</p>
+    <p class="hint"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#77d7a8"></span> Nota normal &nbsp;&nbsp; <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#74a7ff"></span> Acento</p>
+  </section>
+</main>
+</div>
+<footer class="credits">
+Desenvolvido pelo professor Glauber Santiago — DAC/UFSCar<br>
+<a href="https://servidores.ufscar.br/glauber/" target="_blank" rel="noopener">servidores.ufscar.br/glauber/</a> •
+<a href="https://sites.google.com/view/glauberia" target="_blank" rel="noopener">sites.google.com/view/glauberia</a>
+</footer>
+<script>
+const drums=[{id:'splash',name:'Splash',pitch:55,short:'Spl'},{id:'crash',name:'Prato de ataque',pitch:49,short:'Atk'},{id:'ride',name:'Prato de condução',pitch:51,short:'Ride'},{id:'highTom',name:'Tom agudo',pitch:50,short:'T.Ag'},{id:'lowTom',name:'Tom grave',pitch:45,short:'T.Gr'},{id:'floorTom',name:'Surdo',pitch:41,short:'Sur'},{id:'openHat',name:'Chimbal aberto',pitch:46,short:'HH O'},{id:'pedalHat',name:'Chimbal pé',pitch:44,short:'HH P'},{id:'closedHat',name:'Chimbal fechado',pitch:42,short:'HH F'},{id:'snare',name:'Caixa',pitch:38,short:'Cx'},{id:'rim',name:'Borda',pitch:37,short:'Bor'},{id:'kick',name:'Bumbo',pitch:36,short:'Bum'}];
+function parseTimeSig(sig){const p=String(sig||'4/4').split('/').map(Number);return{num:p[0]||4,den:p[1]||4}}
+function stepsPerBar(p){const ts=parseTimeSig(p.timeSig);return Math.round(p.resolution*ts.num/ts.den)}
+function stepCount(p=current()){return p.bars*stepsPerBar(p)}
+function beatInterval(p){const ts=parseTimeSig(p.timeSig);return ts.num===6&&ts.den===8?Math.max(1,Math.round(p.resolution*3/8)):Math.max(1,Math.round(p.resolution/4))}
+function emptyGrid(steps){const g={};drums.forEach(d=>g[d.id]=Array.from({length:steps},()=>0));return g}
+function makePattern(name,bars=1,resolution=16,timeSig='4/4'){const p={name,bars,resolution,timeSig,grid:{}};p.grid=emptyGrid(stepCountFor(p));return p}
+function stepCountFor(p){return p.bars*stepsPerBar(p)}
+function normalizePattern(p){if(!p.timeSig)p.timeSig='4/4';const steps=stepCountFor(p);drums.forEach(d=>{if(!p.grid[d.id])p.grid[d.id]=[];while(p.grid[d.id].length<steps)p.grid[d.id].push(0);if(p.grid[d.id].length>steps)p.grid[d.id]=p.grid[d.id].slice(0,steps)})}
+function setHits(p,id,arr,val=1){arr.forEach(s=>{if(p.grid[id]&&s<p.grid[id].length)p.grid[id][s]=val})}
+let state={selectedPattern:0,patterns:[makePattern('Rock básico',1,16,'4/4'),makePattern('Pop 2 compassos',2,16,'4/4'),makePattern('Bossa bateria',1,16,'4/4')]};
+function seed(){let r=state.patterns[0];setHits(r,'kick',[0,8]);setHits(r,'snare',[4,12]);setHits(r,'closedHat',[0,2,4,6,8,10,12,14]);setHits(r,'crash',[0],2);let p=state.patterns[1];setHits(p,'kick',[0,6,16,22]);setHits(p,'snare',[8,24]);setHits(p,'closedHat',[0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30]);setHits(p,'openHat',[14,30]);setHits(p,'crash',[0],2);let b=state.patterns[2];setHits(b,'kick',[0,6,10]);setHits(b,'rim',[3,7,11,15]);setHits(b,'closedHat',[0,2,4,6,8,10,12,14]);setHits(b,'pedalHat',[4,12])}
+function current(){return state.patterns[state.selectedPattern]}
+function hitCount(p=current()){let n=0;drums.forEach(d=>p.grid[d.id].forEach(v=>{if(v)n++}));return n}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function setStatus(s){document.getElementById('status').textContent=s}
+function renderList(){const list=document.getElementById('patternList');list.innerHTML='';state.patterns.forEach((p,i)=>{normalizePattern(p);const el=document.createElement('div');el.className='pattern'+(i===state.selectedPattern?' active':'');el.innerHTML='<b>'+esc(p.name)+'</b><span>'+p.bars+' comp. · '+p.timeSig+' · '+stepCountFor(p)+' passos · '+hitCount(p)+' notas</span>';el.onclick=()=>{state.selectedPattern=i;renderAll()};list.appendChild(el)})}
+function renderForm(){const p=current();document.getElementById('patternName').value=p.name;document.getElementById('barsSelect').value=String(p.bars);document.getElementById('timeSigSelect').value=p.timeSig;document.getElementById('resolutionSelect').value=String(p.resolution)}
+function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;html+='<div class="step '+(beat?'beat':'')+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(v?'on ':'')+(v===2?'accent':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;p.grid[d][s]=e.shiftKey?(old===2?0:2):(old===0?1:0);renderAll();setStatus('Ritmo atualizado.')}})}
+function renderAll(){renderList();renderForm();renderSequencer()}
+function resizeGrid(msg){const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
+document.getElementById('patternName').oninput=e=>{current().name=e.target.value||'Sem nome';renderAll()};
+document.getElementById('barsSelect').onchange=e=>{current().bars=Number(e.target.value);resizeGrid('Compassos alterados.')};
+document.getElementById('timeSigSelect').onchange=e=>{current().timeSig=e.target.value;resizeGrid('Fórmula de compasso alterada.')};
+document.getElementById('resolutionSelect').onchange=e=>{current().resolution=Number(e.target.value);resizeGrid('Célula alterada.')};
+document.getElementById('addPatternBtn').onclick=()=>{state.patterns.push(makePattern('Novo ritmo',1,16,'4/4'));state.selectedPattern=state.patterns.length-1;renderAll()};
+document.getElementById('duplicatePatternBtn').onclick=()=>{const c=JSON.parse(JSON.stringify(current()));c.name+=' cópia';state.patterns.push(c);state.selectedPattern=state.patterns.length-1;renderAll()};
+document.getElementById('deletePatternBtn').onclick=()=>{if(state.patterns.length<=1)return setStatus('Mantenha pelo menos um ritmo.');state.patterns.splice(state.selectedPattern,1);state.selectedPattern=Math.max(0,state.selectedPattern-1);renderAll()};
+document.getElementById('clearBtn').onclick=()=>{current().grid=emptyGrid(stepCountFor(current()));renderAll()};
+document.getElementById('fillHihatBtn').onclick=()=>{const p=current();const gap=p.resolution===16?2:1;for(let s=0;s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1;renderAll()};
+document.getElementById('basicBeatBtn').onclick=()=>{const p=current();p.grid=emptyGrid(stepCountFor(p));const bar=stepsPerBar(p);for(let b=0;b<p.bars;b++){const o=b*bar;p.grid.kick[o]=1;if(o+Math.floor(bar/2)<stepCountFor(p))p.grid.kick[o+Math.floor(bar/2)]=1;if(o+Math.floor(bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(bar/4)]=1;if(o+Math.floor(3*bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(3*bar/4)]=1;const gap=p.resolution===16?2:1;for(let s=o;s<o+bar&&s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1}p.grid.crash[0]=2;renderAll()};
+function encodeData(){return btoa(unescape(encodeURIComponent(JSON.stringify(state.patterns))))}
+function decodeData(s){return JSON.parse(decodeURIComponent(escape(atob(s))))}
+function importFile(mode){const input=document.getElementById('importFile');input.onchange=()=>{const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const text=String(reader.result||'');const marker='TROPICAL_DRUM_GL_DATA=';const idx=text.indexOf(marker);if(idx<0){setStatus('Arquivo sem dados importáveis deste gerador.');return}const line=text.substring(idx+marker.length).split(/\r?\n/)[0].trim();try{const imported=decodeData(line);if(mode==='replace'){state.patterns=imported;state.selectedPattern=0}else{state.patterns.push(...imported);state.selectedPattern=state.patterns.length-imported.length}renderAll();setStatus(imported.length+' ritmo(s) importado(s).')}catch(e){setStatus('Não foi possível importar este arquivo.')}};reader.readAsText(file);input.value=''};input.click()}
+document.getElementById('importAddBtn').onclick=()=>importFile('add');document.getElementById('importReplaceBtn').onclick=()=>importFile('replace');
+function q(s){return JSON.stringify(String(s))}function fn(name,i){return 'generate'+name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,' ').trim().split(/\s+/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('')+'DrumPattern'+i}
+function eventsLiteral(p){const ev=[];for(let s=0;s<stepCountFor(p);s++)drums.forEach(d=>{const v=p.grid[d.id][s]||0;if(v)ev.push({step:s,pitch:d.pitch,accent:v===2,name:d.name})});return '[\n'+ev.map(e=>'            { step: '+e.step+', pitch: '+e.pitch+', accent: '+(e.accent?'true':'false')+', name: '+q(e.name)+' }').join(',\n')+'\n        ]'}
+function functionsCode(){return state.patterns.map((p,i)=>'    function '+fn(p.name,i)+'() {\n        generateDrumPattern('+q(p.name)+', '+p.bars+', '+stepsPerBar(p)+', '+p.resolution+', '+eventsLiteral(p)+', '+q(p.timeSig)+');\n    }').join('\n\n')}
+function buttonsCode(){return state.patterns.map((p,i)=>'                Button { text: '+q(p.name)+'; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true; Layout.preferredHeight: 28; onClicked: '+fn(p.name,i)+'() }').join('\n')}
+function generatePluginCode(){return `// TROPICAL_DRUM_GL_DATA=${encodeData()}
+import MuseScore 3.0
+import QtQuick 2.15
+import QtQuick.Controls 2.15
+import QtQuick.Layouts 1.15
+
+MuseScore {
+    menuPath: "Plugins.Tropical Drum GL (Groove Lab)"
+    description: "Tropical Drum GL (Groove Lab). Gera ritmos de bateria criados no Tropical Drum GL Maker. Desenvolvido pelo professor Glauber Santiago - UFSCar."
+    version: "1.0"
+    requiresScore: true
+    pluginType: "dialog"
+    width: 390
+    height: 700
+    property string statusText: "Selecione o ponto inicial em uma pauta de bateria e clique em um ritmo."
+    function setupCursorAtSelection() { var cursor = curScore.newCursor(); cursor.rewind(1); return cursor; }
+    function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b!==0){ var t=b; b=a%b; a=t; } return a||1; }
+    function durationFromSteps(stepCount, stepDenominator){ var d=gcd(stepCount, stepDenominator); return { z: stepCount/d, n: stepDenominator/d }; }
+    function hitsAtStep(events, step){ var hits=[]; for(var i=0;i<events.length;i++) if(events[i].step===step) hits.push(events[i]); return hits; }
+    function nextHitStep(events,currentStep,endStep){ var next=endStep; for(var i=0;i<events.length;i++){ var s=events[i].step; if(s>currentStep && s<next) next=s; } return next; }
+    function addDrumChordAtCursor(cursor, track, hits, durationZ, durationN){ var startTick=cursor.tick; cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addNote(hits[0].pitch,false); for(var i=1;i<hits.length;i++){ cursor.rewindToTick(startTick); cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addNote(hits[i].pitch,true); } cursor.rewindToTick(startTick); cursor.track=track; cursor.next(); }
+    function addRestAtCursor(cursor, track, durationZ, durationN){ cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addRest(); }
+    function generateDrumPattern(label,bars,stepsPerBar,stepDenominator,events,timeSig){ if(!curScore){statusText="Nenhuma partitura aberta.";return;} var cursor=setupCursorAtSelection(); var track=cursor.track; var endStep=bars*stepsPerBar; var inserted=0; var step=0; curScore.startCmd(); while(step<endStep){ var hits=hitsAtStep(events,step); var nextStep=nextHitStep(events,step,endStep); var gap=nextStep-step; if(gap<=0)gap=1; var dur=durationFromSteps(gap,stepDenominator); if(hits.length>0){ addDrumChordAtCursor(cursor,track,hits,dur.z,dur.n); inserted+=hits.length; } else { addRestAtCursor(cursor,track,dur.z,dur.n); } step=nextStep; } curScore.endCmd(); statusText=label+": "+inserted+" notas de bateria inseridas."; }
+${functionsCode()}
+    Rectangle { anchors.fill: parent; color: "#ECECEC"; ColumnLayout { anchors.fill: parent; anchors.margins: 8; spacing: 5; Label { text: "Tropical Drum GL (Groove Lab)"; font.bold: true; font.pixelSize: 12; Layout.alignment: Qt.AlignHCenter } Label { text: "Desenvolvido pelo professor Glauber Santiago - UFSCar"; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; color: "#666"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } Rectangle { height: 1; color: "#D0D0D0"; Layout.fillWidth: true } Label { text: "Ritmos de bateria"; font.bold: true; Layout.fillWidth: true } ScrollView { Layout.fillWidth: true; Layout.fillHeight: true; clip: true; ColumnLayout { width: parent.width; spacing: 5;
+${buttonsCode()}
+    } } Label { text: statusText; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; color: "#555"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } } }
+}`}
+document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(generatePluginCode());setStatus('Código copiado.')}catch(e){setStatus('Copie pelo preview.')}};document.getElementById('downloadBtn').onclick=()=>{const blob=new Blob([generatePluginCode()],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tropical Drum GL - Groove Lab.qml';document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();setStatus('Plugin .qml gerado.')};
+seed();renderAll();
+</script>
+</body>
+</html>
