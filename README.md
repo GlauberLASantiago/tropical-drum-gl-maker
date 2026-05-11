@@ -12,7 +12,7 @@ Sequenciador visual em HTML para criar ritmos de bateria e exportar padrões com
 
 ## Como usar
 
-1. Abra o arquivo `/home/runner/work/tropical-drum-gl-maker/tropical-drum-gl-maker/index.html` em um navegador.
+1. Abra o arquivo `index.html` em um navegador a partir da sua cópia local do repositório.
 2. Escolha um ritmo existente ou crie um novo.
 3. Edite a grade do sequenciador clicando nas células.
 4. Use os botões de importação, cópia ou download para gerar o conteúdo desejado.
