@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -11,6 +12,7 @@
 header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);letter-spacing:-.035em}p{color:var(--muted);line-height:1.35;margin:6px 0}.layout{width:100%;padding:8px 16px 20px;display:grid;grid-template-columns:285px minmax(0,1fr);gap:12px;align-items:start}.panel{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:var(--shadow)}
 .sidebar{padding:10px;position:sticky;top:8px}.main{min-width:0}.below-seq{margin-top:10px;display:grid;grid-template-columns:1.15fr .85fr .85fr;gap:10px;align-items:start}.box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:9px;margin-bottom:8px}.title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}.row{display:flex;gap:6px;flex-wrap:wrap}.row>*{flex:1 1 96px}label{display:block;color:var(--muted);font-size:12px;margin:0 0 4px}input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 8px;outline:none}.btn{border:1px solid rgba(255,255,255,.1);border-radius:10px;background:var(--panel2);color:var(--text);padding:7px 9px;cursor:pointer}.btn:hover{background:#2a2f3b}.btn.primary{background:linear-gradient(180deg,#83e9b5,#53b983);color:#07140e;font-weight:800;border:0}.btn.blue{background:linear-gradient(180deg,#8db9ff,#5b8ee6);color:#061225;font-weight:800;border:0}.btn.danger{background:rgba(255,111,125,.13);border-color:rgba(255,111,125,.28);color:#ffd1d6}.btn.small{font-size:12px;padding:6px 8px}.btn.full{width:100%}.patterns{display:grid;grid-template-columns:1fr;gap:6px;max-height:380px;overflow:auto}.pattern{padding:7px 8px;background:var(--panel2);border:1px solid transparent;border-radius:10px;cursor:pointer}.pattern.active{border-color:var(--accent);background:rgba(119,215,168,.12)}.pattern b{display:block;font-size:13px}.pattern span{font-size:11px;color:var(--muted)}.status{font-size:12px;color:#dce9ff;background:rgba(116,167,255,.1);border:1px solid rgba(116,167,255,.18);border-radius:10px;padding:7px 8px;margin-top:6px}
 .seq-card{padding:10px}.seq-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.seq-head h2{font-size:16px;margin:0}.hint{font-size:12px;color:var(--muted)}.sequencer-wrap{width:100%;overflow:auto}.sequencer{width:100%;min-width:760px;display:grid;grid-template-columns:145px repeat(var(--steps),minmax(20px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#11141b}.corner,.step,.label,.cell{min-height:29px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}.corner,.step{background:#171b24;color:var(--muted);font-size:11px}.step.beat{color:var(--text);font-weight:800;background:rgba(255,255,255,.045)}.label{justify-content:space-between;padding:0 7px;background:#171b24;position:sticky;left:0;z-index:2;font-size:12px}.label span{color:var(--muted);font-size:10px}.cell{background:#151821;cursor:pointer}.cell.beat{background:#1a1f2a}.cell:hover{box-shadow:inset 0 0 0 2px rgba(116,167,255,.35)}.cell.on:after{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--accent),#48b67d);box-shadow:0 0 14px rgba(119,215,168,.35)}.cell.accent:after{background:linear-gradient(180deg,var(--accent2),#5b8ee6);transform:scale(1.08)}.bottom{margin-top:10px}.credits{text-align:center;padding:16px;color:#d5dae5;font-size:13px}.credits a{color:#d5f8ff;text-decoration:none;border-bottom:1px solid rgba(213,248,255,.45)}
+.player-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:end}.range-line{display:flex;align-items:center;gap:8px}.range-line input[type=range]{padding:0}.meter{height:8px;background:#10131a;border:1px solid var(--line);border-radius:999px;overflow:hidden}.meter span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent))}.cell.playing{box-shadow:inset 0 0 0 2px #fff7,0 0 12px rgba(116,167,255,.35)}.step.playing{background:rgba(116,167,255,.22);color:var(--text)}.btn.playing{background:linear-gradient(180deg,#ffd98d,#e6a85b);color:#241506;font-weight:800;border:0}@media(max-width:1100px){.player-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.player-grid{grid-template-columns:1fr}}
 @media(max-width:1100px){.below-seq{grid-template-columns:1fr 1fr}}@media(max-width:900px){.layout{grid-template-columns:1fr;padding:8px}.sidebar{position:static}.below-seq{grid-template-columns:1fr}.sequencer{min-width:680px}}
 </style>
 </head>
@@ -34,6 +36,32 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
       <div class="hint">De baixo para cima: bumbo, borda, caixa, chimbais, tons e pratos. A grade representa ataques; o plugin normaliza as durações.</div>
     </div>
     <div class="sequencer-wrap"><div id="sequencer" class="sequencer"></div></div>
+  </section>
+  <section class="panel box bottom">
+    <div class="title">Player</div>
+    <div class="player-grid">
+      <div>
+        <label>Transporte</label>
+        <div class="row">
+          <button class="btn primary" id="playBtn">▶ Tocar</button>
+          <button class="btn" id="stopBtn">■ Parar</button>
+        </div>
+      </div>
+      <div>
+        <label>Andamento: <span id="bpmValue">100</span> BPM</label>
+        <div class="range-line"><input id="bpmSlider" type="range" min="40" max="240" value="100" step="1"></div>
+      </div>
+      <div>
+        <label>Progresso: passo <span id="stepValue">1</span>/<span id="stepTotal">16</span></label>
+        <input id="progressSlider" type="range" min="0" max="15" value="0" step="1">
+        <div class="meter" aria-hidden="true"><span id="progressMeter"></span></div>
+      </div>
+      <div>
+        <label>Volume: <span id="volumeValue">85</span>%</label>
+        <input id="volumeSlider" type="range" min="0" max="100" value="85" step="1">
+      </div>
+    </div>
+    <p class="hint" id="audioStatus">O primeiro toque pode levar alguns segundos para carregar os sons.</p>
   </section>
   <section class="below-seq">
     <div class="panel box">
@@ -91,6 +119,87 @@ function stepCountFor(p){return p.bars*stepsPerBar(p)}
 function normalizePattern(p){if(!p.timeSig)p.timeSig='4/4';const steps=stepCountFor(p);drums.forEach(d=>{if(!p.grid[d.id])p.grid[d.id]=[];while(p.grid[d.id].length<steps)p.grid[d.id].push(0);if(p.grid[d.id].length>steps)p.grid[d.id]=p.grid[d.id].slice(0,steps)})}
 function setHits(p,id,arr,val=1){arr.forEach(s=>{if(p.grid[id]&&s<p.grid[id].length)p.grid[id][s]=val})}
 let state={selectedPattern:0,patterns:[]};
+const soundUrls={
+  kick:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/36.mp3',
+  rim:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/37.mp3',
+  snare:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/38.mp3',
+  closedHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/42.mp3',
+  pedalHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/44.mp3',
+  openHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/46.mp3',
+  floorTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/41.mp3',
+  lowTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/45.mp3',
+  highTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/50.mp3',
+  ride:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/51.mp3',
+  crash:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/49.mp3',
+  splash:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/55.mp3'
+};
+const player={ctx:null,buffers:{},loading:null,isPlaying:false,currentStep:0,timer:null,nextTime:0,lookahead:null,bpm:100,volume:.85};
+function setAudioStatus(s){const el=document.getElementById('audioStatus');if(el)el.textContent=s}
+async function ensureAudio(){
+  if(player.loading)return player.loading;
+  if(Object.keys(player.buffers).length===drums.length)return Promise.resolve();
+  player.loading=(async()=>{
+    player.ctx=player.ctx||new (window.AudioContext||window.webkitAudioContext)();
+    setAudioStatus('Carregando sons de bateria...');
+    await Promise.all(drums.map(async d=>{
+      const response=await fetch(soundUrls[d.id]);
+      if(!response.ok)throw new Error('Falha ao carregar '+d.name);
+      const data=await response.arrayBuffer();
+      player.buffers[d.id]=await player.ctx.decodeAudioData(data);
+    }));
+    setAudioStatus('Sons carregados. Pronto para tocar.');
+  })().catch(err=>{player.loading=null;setAudioStatus('Erro ao carregar sons: '+err.message);throw err});
+  return player.loading;
+}
+function playDrum(id,when=0,accent=false){
+  if(!player.ctx||!player.buffers[id])return;
+  const src=player.ctx.createBufferSource();
+  const gain=player.ctx.createGain();
+  src.buffer=player.buffers[id];
+  gain.gain.value=player.volume*(accent?1:0.78);
+  src.connect(gain).connect(player.ctx.destination);
+  src.start(when);
+}
+function stepSeconds(){return (60/player.bpm)*(4/current().resolution)}
+function triggerStep(step,when=0){
+  const p=current();
+  drums.forEach(d=>{const v=p.grid[d.id]?.[step]||0;if(v)playDrum(d.id,when,v===2)});
+}
+function updatePlayerUI(){
+  const p=current();const total=stepCountFor(p);if(player.currentStep>=total)player.currentStep=0;
+  const bpm=document.getElementById('bpmValue'),step=document.getElementById('stepValue'),tot=document.getElementById('stepTotal'),prog=document.getElementById('progressSlider'),meter=document.getElementById('progressMeter'),play=document.getElementById('playBtn'),vol=document.getElementById('volumeValue');
+  if(bpm)bpm.textContent=player.bpm;
+  if(step)step.textContent=String(player.currentStep+1);
+  if(tot)tot.textContent=String(total);
+  if(prog){prog.max=String(Math.max(0,total-1));prog.value=String(player.currentStep)}
+  if(meter)meter.style.width=(total<=1?'0':(player.currentStep/(total-1))*100)+'%';
+  if(play){play.textContent=player.isPlaying?'⏸ Pausar':'▶ Tocar';play.classList.toggle('playing',player.isPlaying)}
+  if(vol)vol.textContent=Math.round(player.volume*100);
+}
+function highlightCurrentStep(){
+  document.querySelectorAll('.cell.playing,.step.playing').forEach(el=>el.classList.remove('playing'));
+  document.querySelectorAll('[data-step="'+player.currentStep+'"]').forEach(el=>el.classList.add('playing'));
+  updatePlayerUI();
+}
+function schedulerTick(){
+  const p=current();const total=stepCountFor(p);
+  if(player.currentStep>=total)player.currentStep=0;
+  triggerStep(player.currentStep,0);
+  highlightCurrentStep();
+  player.currentStep=(player.currentStep+1)%total;
+}
+async function togglePlay(){
+  if(player.isPlaying){stopPlayback(false);return}
+  try{await ensureAudio();await player.ctx.resume();player.isPlaying=true;updatePlayerUI();schedulerTick();player.timer=setInterval(schedulerTick,stepSeconds()*1000)}
+  catch(e){setStatus('Não foi possível iniciar o player. Verifique a conexão com os arquivos MP3.')}
+}
+function stopPlayback(reset=true){
+  player.isPlaying=false;
+  if(player.timer){clearInterval(player.timer);player.timer=null}
+  if(reset)player.currentStep=0;
+  highlightCurrentStep();
+}
+
 function addPreset(name,bars,resolution,timeSig,hits){
   const p=makePattern(name,bars,resolution,timeSig);
   Object.keys(hits).forEach(id=>{
@@ -147,9 +256,9 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 function setStatus(s){document.getElementById('status').textContent=s}
 function renderList(){const list=document.getElementById('patternList');list.innerHTML='';state.patterns.forEach((p,i)=>{normalizePattern(p);const el=document.createElement('div');el.className='pattern'+(i===state.selectedPattern?' active':'');el.innerHTML='<b>'+esc(p.name)+'</b><span>'+p.bars+' comp. · '+p.timeSig+' · '+stepCountFor(p)+' passos · '+hitCount(p)+' notas</span>';el.onclick=()=>{state.selectedPattern=i;renderAll()};list.appendChild(el)})}
 function renderForm(){const p=current();document.getElementById('patternName').value=p.name;document.getElementById('barsSelect').value=String(p.bars);document.getElementById('timeSigSelect').value=p.timeSig;document.getElementById('resolutionSelect').value=String(p.resolution)}
-function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;html+='<div class="step '+(beat?'beat':'')+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(v?'on ':'')+(v===2?'accent':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;p.grid[d][s]=e.shiftKey?(old===2?0:2):(old===0?1:0);renderAll();setStatus('Ritmo atualizado.')}})}
-function renderAll(){renderList();renderForm();renderSequencer()}
-function resizeGrid(msg){const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
+function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;html+='<div class="step '+(beat?'beat ':'')+(s===player.currentStep?'playing':'')+'" data-step="'+s+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(v?'on ':'')+(v===2?'accent ':'')+(s===player.currentStep?'playing':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;p.grid[d][s]=e.shiftKey?(old===2?0:2):(old===0?1:0);renderAll();setStatus('Ritmo atualizado.')}})}
+function renderAll(){renderList();renderForm();renderSequencer();updatePlayerUI()}
+function resizeGrid(msg){stopPlayback();const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
 document.getElementById('patternName').oninput=e=>{current().name=e.target.value||'Sem nome';renderAll()};
 document.getElementById('barsSelect').onchange=e=>{current().bars=Number(e.target.value);resizeGrid('Compassos alterados.')};
 document.getElementById('timeSigSelect').onchange=e=>{current().timeSig=e.target.value;resizeGrid('Fórmula de compasso alterada.')};
@@ -197,6 +306,12 @@ ${buttonsCode()}
     } } Label { text: statusText; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; color: "#555"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } } }
 }`}
 document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(generatePluginCode());setStatus('Código copiado.')}catch(e){setStatus('Copie pelo preview.')}};document.getElementById('downloadBtn').onclick=()=>{const blob=new Blob([generatePluginCode()],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tropical Drum GL - Groove Lab.qml';document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();setStatus('Plugin .qml gerado.')};
+document.getElementById('playBtn').onclick=togglePlay;
+document.getElementById('stopBtn').onclick=()=>stopPlayback(true);
+document.getElementById('bpmSlider').oninput=e=>{player.bpm=Number(e.target.value);if(player.isPlaying){clearInterval(player.timer);player.timer=setInterval(schedulerTick,stepSeconds()*1000)}updatePlayerUI()};
+document.getElementById('progressSlider').oninput=e=>{player.currentStep=Number(e.target.value);highlightCurrentStep()};
+document.getElementById('progressSlider').onchange=async e=>{try{await ensureAudio();triggerStep(Number(e.target.value),0)}catch(err){}};
+document.getElementById('volumeSlider').oninput=e=>{player.volume=Number(e.target.value)/100;updatePlayerUI()};
 seed();renderAll();
 </script>
 </body>
