@@ -2,7 +2,8 @@
 
 Sequenciador visual em HTML para criar ritmos de bateria e exportar padrões compatíveis com o plugin **Tropical Drum GL (Groove Lab)** no MuseScore.
 
-<img width="920" height="883" alt="image" src="https://github.com/user-attachments/assets/94c55979-cb3a-4e42-988d-59bceaa2a8e0" />
+<img width="1882" height="930" alt="image" src="https://github.com/user-attachments/assets/92f84c4d-b8d9-4f05-9114-ce794807f1d2" />
+
 
 
 # README — Tropical Drum GL (Groove Lab) Maker
