@@ -61,7 +61,7 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
         <input id="volumeSlider" type="range" min="0" max="100" value="85" step="1">
       </div>
     </div>
-    <p class="hint" id="audioStatus">O primeiro toque pode levar alguns segundos para carregar os sons.</p>
+    <p class="hint" id="audioStatus">O primeiro toque carrega os MP3 e monta um áudio único em loop para reduzir cortes e imprecisão.</p>
   </section>
   <section class="below-seq">
     <div class="panel box">
@@ -138,49 +138,117 @@ function audioUrlForDrum(id){
   if(!item)throw new Error('Sem link de áudio para '+id);
   return item.url+'?raw=1';
 }
-const player={audios:{},loading:null,isPlaying:false,currentStep:0,timer:null,bpm:100,volume:.85};
+const player={
+  ctx:null,
+  buffers:{},
+  loading:null,
+  rendering:null,
+  loopBuffer:null,
+  loopKey:'',
+  source:null,
+  gain:null,
+  raf:null,
+  isPlaying:false,
+  currentStep:0,
+  pausedAt:0,
+  startedAt:0,
+  loopDuration:0,
+  bpm:100,
+  volume:.85
+};
 function setAudioStatus(s){const el=document.getElementById('audioStatus');if(el)el.textContent=s}
-function loadOneAudio(id){
-  return new Promise((resolve,reject)=>{
-    const item=drumSoundLinks[id];
-    const a=new Audio();
-    a.preload='auto';
-    a.src=audioUrlForDrum(id);
-    const done=()=>{cleanup();resolve(a)};
-    const fail=()=>{cleanup();reject(new Error('Falha ao carregar '+item.name+' em '+item.url))};
-    const cleanup=()=>{a.removeEventListener('canplaythrough',done);a.removeEventListener('loadeddata',done);a.removeEventListener('error',fail)};
-    a.addEventListener('canplaythrough',done,{once:true});
-    a.addEventListener('loadeddata',done,{once:true});
-    a.addEventListener('error',fail,{once:true});
-    a.load();
-    setTimeout(()=>{ if(a.readyState>=2) done(); }, 2500);
-  });
+function makeAudioContext(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC)throw new Error('Este navegador não suporta Web Audio API.');
+  if(!player.ctx)player.ctx=new AC();
+  return player.ctx;
+}
+async function loadOneBuffer(id){
+  const item=drumSoundLinks[id];
+  const ctx=makeAudioContext();
+  const res=await fetch(audioUrlForDrum(id),{cache:'force-cache'});
+  if(!res.ok)throw new Error('Falha ao carregar '+item.name+' em '+item.url);
+  const arr=await res.arrayBuffer();
+  return await ctx.decodeAudioData(arr);
 }
 async function ensureAudio(){
   if(player.loading)return player.loading;
-  if(Object.keys(player.audios).length===drums.length)return Promise.resolve();
+  if(Object.keys(player.buffers).length===drums.length)return Promise.resolve();
   player.loading=(async()=>{
-    setAudioStatus('Carregando sons de bateria...');
+    setAudioStatus('Carregando MP3 como buffers de áudio...');
+    makeAudioContext();
     for(const d of drums){
-      if(!player.audios[d.id])player.audios[d.id]=await loadOneAudio(d.id);
+      if(!player.buffers[d.id])player.buffers[d.id]=await loadOneBuffer(d.id);
     }
-    setAudioStatus('Sons carregados. Pronto para tocar.');
+    setAudioStatus('Sons carregados. O player agora monta um loop único antes de tocar.');
   })().catch(err=>{player.loading=null;setAudioStatus('Erro ao carregar sons: '+err.message);throw err});
   return player.loading;
 }
-function playDrum(id,when=0,accent=false){
-  const base=player.audios[id];
-  if(!base)return;
-  const a=base.cloneNode(true);
-  a.volume=Math.max(0,Math.min(1,player.volume*(accent?1:0.78)));
-  a.currentTime=0;
-  const play=()=>a.play().catch(()=>{});
-  if(when>0)setTimeout(play,when*1000);else play();
-}
 function stepSeconds(){return (60/player.bpm)*(4/current().resolution)}
-function triggerStep(step,when=0){
+function currentLoopKey(){
   const p=current();
-  drums.forEach(d=>{const v=p.grid[d.id]?.[step]||0;if(v)playDrum(d.id,when,v===2)});
+  normalizePattern(p);
+  return JSON.stringify({pattern:p,bpm:player.bpm});
+}
+function allHitsForPattern(){
+  const p=current();
+  const hits=[];
+  const total=stepCountFor(p);
+  for(let s=0;s<total;s++){
+    drums.forEach(d=>{
+      const v=p.grid[d.id]?.[s]||0;
+      if(v)hits.push({id:d.id,step:s,accent:v===2});
+    });
+  }
+  return hits;
+}
+async function renderLoopBuffer(){
+  await ensureAudio();
+  const key=currentLoopKey();
+  if(player.loopBuffer&&player.loopKey===key)return player.loopBuffer;
+  if(player.rendering)return player.rendering;
+  player.rendering=(async()=>{
+    const p=current();
+    const total=stepCountFor(p);
+    const stepDur=stepSeconds();
+    const loopDur=Math.max(0.05,total*stepDur);
+    const ctx=makeAudioContext();
+    const sr=ctx.sampleRate||44100;
+    const offline=new OfflineAudioContext(2,Math.ceil(loopDur*sr),sr);
+    const master=offline.createGain();
+    master.gain.value=1;
+    master.connect(offline.destination);
+    const hits=allHitsForPattern();
+    function scheduleHit(h,t){
+      const buffer=player.buffers[h.id];
+      if(!buffer)return;
+      const src=offline.createBufferSource();
+      src.buffer=buffer;
+      const g=offline.createGain();
+      g.gain.value=h.accent?1:0.78;
+      src.connect(g).connect(master);
+      try{src.start(Math.max(0,t));}catch(e){}
+    }
+    hits.forEach(h=>{
+      const t=h.step*stepDur;
+      scheduleHit(h,t);
+      const buffer=player.buffers[h.id];
+      if(buffer&&t+buffer.duration>loopDur) scheduleHit(h,t-loopDur);
+    });
+    setAudioStatus('Montando áudio do loop em segundo plano...');
+    const rendered=await offline.startRendering();
+    player.loopBuffer=rendered;
+    player.loopKey=key;
+    player.loopDuration=loopDur;
+    player.rendering=null;
+    setAudioStatus('Loop montado. Reprodução mais estável ativada.');
+    return rendered;
+  })().catch(err=>{player.rendering=null;setAudioStatus('Erro ao montar o loop: '+err.message);throw err});
+  return player.rendering;
+}
+function invalidateLoop(){
+  player.loopBuffer=null;
+  player.loopKey='';
 }
 function updatePlayerUI(){
   const p=current();const total=stepCountFor(p);if(player.currentStep>=total)player.currentStep=0;
@@ -198,23 +266,68 @@ function highlightCurrentStep(){
   document.querySelectorAll('[data-step="'+player.currentStep+'"]').forEach(el=>el.classList.add('playing'));
   updatePlayerUI();
 }
-function schedulerTick(){
-  const p=current();const total=stepCountFor(p);
-  if(player.currentStep>=total)player.currentStep=0;
-  triggerStep(player.currentStep,0);
+function animationTick(){
+  if(!player.isPlaying||!player.loopDuration){return}
+  const total=stepCountFor(current());
+  const pos=((player.ctx.currentTime-player.startedAt)%player.loopDuration+player.loopDuration)%player.loopDuration;
+  player.currentStep=Math.floor(pos/stepSeconds())%total;
   highlightCurrentStep();
-  player.currentStep=(player.currentStep+1)%total;
+  player.raf=requestAnimationFrame(animationTick);
+}
+function stopSourceOnly(){
+  if(player.source){try{player.source.stop()}catch(e){} player.source.disconnect(); player.source=null;}
+  if(player.raf){cancelAnimationFrame(player.raf);player.raf=null;}
 }
 async function togglePlay(){
-  if(player.isPlaying){stopPlayback(false);return}
-  try{await ensureAudio();player.isPlaying=true;updatePlayerUI();schedulerTick();player.timer=setInterval(schedulerTick,stepSeconds()*1000)}
-  catch(e){setStatus('Não foi possível iniciar o player. Verifique a conexão com os arquivos MP3.');}
+  if(player.isPlaying){
+    player.pausedAt=((player.ctx.currentTime-player.startedAt)%player.loopDuration+player.loopDuration)%player.loopDuration;
+    player.isPlaying=false;
+    stopSourceOnly();
+    highlightCurrentStep();
+    return;
+  }
+  try{
+    const ctx=makeAudioContext();
+    if(ctx.state==='suspended')await ctx.resume();
+    const buffer=await renderLoopBuffer();
+    stopSourceOnly();
+    if(!player.gain){player.gain=ctx.createGain();player.gain.connect(ctx.destination)}
+    player.gain.gain.value=player.volume;
+    const src=ctx.createBufferSource();
+    src.buffer=buffer;
+    src.loop=true;
+    src.connect(player.gain);
+    const offset=Math.min(player.pausedAt||player.currentStep*stepSeconds(),Math.max(0,player.loopDuration-.001));
+    src.start(0,offset);
+    player.startedAt=ctx.currentTime-offset;
+    player.source=src;
+    player.isPlaying=true;
+    animationTick();
+  }catch(e){setStatus('Não foi possível iniciar o player. Verifique a conexão com os arquivos MP3.');}
 }
 function stopPlayback(reset=true){
+  if(player.ctx&&player.isPlaying){
+    player.pausedAt=((player.ctx.currentTime-player.startedAt)%player.loopDuration+player.loopDuration)%player.loopDuration;
+  }
   player.isPlaying=false;
-  if(player.timer){clearInterval(player.timer);player.timer=null}
-  if(reset)player.currentStep=0;
+  stopSourceOnly();
+  if(reset){player.currentStep=0;player.pausedAt=0}
   highlightCurrentStep();
+}
+function auditionStep(step){
+  const wasPlaying=player.isPlaying;
+  if(wasPlaying)stopPlayback(false);
+  player.currentStep=step;
+  player.pausedAt=step*stepSeconds();
+  renderLoopBuffer().then(buffer=>{
+    const ctx=makeAudioContext();
+    const src=ctx.createBufferSource();
+    const g=ctx.createGain();
+    src.buffer=buffer;
+    g.gain.value=player.volume;
+    src.connect(g).connect(ctx.destination);
+    src.start(0,player.pausedAt,Math.min(stepSeconds(),buffer.duration-player.pausedAt));
+  }).catch(()=>{});
 }
 
 function addPreset(name,bars,resolution,timeSig,hits){
@@ -273,9 +386,9 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 function setStatus(s){document.getElementById('status').textContent=s}
 function renderList(){const list=document.getElementById('patternList');list.innerHTML='';state.patterns.forEach((p,i)=>{normalizePattern(p);const el=document.createElement('div');el.className='pattern'+(i===state.selectedPattern?' active':'');el.innerHTML='<b>'+esc(p.name)+'</b><span>'+p.bars+' comp. · '+p.timeSig+' · '+stepCountFor(p)+' passos · '+hitCount(p)+' notas</span>';el.onclick=()=>{state.selectedPattern=i;renderAll()};list.appendChild(el)})}
 function renderForm(){const p=current();document.getElementById('patternName').value=p.name;document.getElementById('barsSelect').value=String(p.bars);document.getElementById('timeSigSelect').value=p.timeSig;document.getElementById('resolutionSelect').value=String(p.resolution)}
-function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;html+='<div class="step '+(beat?'beat ':'')+(s===player.currentStep?'playing':'')+'" data-step="'+s+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(v?'on ':'')+(v===2?'accent ':'')+(s===player.currentStep?'playing':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;p.grid[d][s]=e.shiftKey?(old===2?0:2):(old===0?1:0);renderAll();setStatus('Ritmo atualizado.')}})}
+function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;html+='<div class="step '+(beat?'beat ':'')+(s===player.currentStep?'playing':'')+'" data-step="'+s+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(v?'on ':'')+(v===2?'accent ':'')+(s===player.currentStep?'playing':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;p.grid[d][s]=e.shiftKey?(old===2?0:2):(old===0?1:0);invalidateLoop();renderAll();setStatus('Ritmo atualizado. O áudio do loop será remontado ao tocar.')}})}
 function renderAll(){renderList();renderForm();renderSequencer();updatePlayerUI()}
-function resizeGrid(msg){stopPlayback();const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
+function resizeGrid(msg){stopPlayback();invalidateLoop();const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
 document.getElementById('patternName').oninput=e=>{current().name=e.target.value||'Sem nome';renderAll()};
 document.getElementById('barsSelect').onchange=e=>{current().bars=Number(e.target.value);resizeGrid('Compassos alterados.')};
 document.getElementById('timeSigSelect').onchange=e=>{current().timeSig=e.target.value;resizeGrid('Fórmula de compasso alterada.')};
@@ -283,9 +396,9 @@ document.getElementById('resolutionSelect').onchange=e=>{current().resolution=Nu
 document.getElementById('addPatternBtn').onclick=()=>{state.patterns.push(makePattern('Novo ritmo',1,16,'4/4'));state.selectedPattern=state.patterns.length-1;renderAll()};
 document.getElementById('duplicatePatternBtn').onclick=()=>{const c=JSON.parse(JSON.stringify(current()));c.name+=' cópia';state.patterns.push(c);state.selectedPattern=state.patterns.length-1;renderAll()};
 document.getElementById('deletePatternBtn').onclick=()=>{if(state.patterns.length<=1)return setStatus('Mantenha pelo menos um ritmo.');state.patterns.splice(state.selectedPattern,1);state.selectedPattern=Math.max(0,state.selectedPattern-1);renderAll()};
-document.getElementById('clearBtn').onclick=()=>{current().grid=emptyGrid(stepCountFor(current()));renderAll()};
-document.getElementById('fillHihatBtn').onclick=()=>{const p=current();const gap=p.resolution===16?2:1;for(let s=0;s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1;renderAll()};
-document.getElementById('basicBeatBtn').onclick=()=>{const p=current();p.grid=emptyGrid(stepCountFor(p));const bar=stepsPerBar(p);for(let b=0;b<p.bars;b++){const o=b*bar;p.grid.kick[o]=1;if(o+Math.floor(bar/2)<stepCountFor(p))p.grid.kick[o+Math.floor(bar/2)]=1;if(o+Math.floor(bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(bar/4)]=1;if(o+Math.floor(3*bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(3*bar/4)]=1;const gap=p.resolution===16?2:1;for(let s=o;s<o+bar&&s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1}p.grid.crash[0]=2;renderAll()};
+document.getElementById('clearBtn').onclick=()=>{stopPlayback();invalidateLoop();current().grid=emptyGrid(stepCountFor(current()));renderAll()};
+document.getElementById('fillHihatBtn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();const gap=p.resolution===16?2:1;for(let s=0;s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1;renderAll()};
+document.getElementById('basicBeatBtn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();p.grid=emptyGrid(stepCountFor(p));const bar=stepsPerBar(p);for(let b=0;b<p.bars;b++){const o=b*bar;p.grid.kick[o]=1;if(o+Math.floor(bar/2)<stepCountFor(p))p.grid.kick[o+Math.floor(bar/2)]=1;if(o+Math.floor(bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(bar/4)]=1;if(o+Math.floor(3*bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(3*bar/4)]=1;const gap=p.resolution===16?2:1;for(let s=o;s<o+bar&&s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1}p.grid.crash[0]=2;renderAll()};
 function encodeData(){return btoa(unescape(encodeURIComponent(JSON.stringify(state.patterns))))}
 function decodeData(s){return JSON.parse(decodeURIComponent(escape(atob(s))))}
 function importFile(mode){const input=document.getElementById('importFile');input.onchange=()=>{const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const text=String(reader.result||'');const marker='TROPICAL_DRUM_GL_DATA=';const idx=text.indexOf(marker);if(idx<0){setStatus('Arquivo sem dados importáveis deste gerador.');return}const line=text.substring(idx+marker.length).split(/\r?\n/)[0].trim();try{const imported=decodeData(line);if(mode==='replace'){state.patterns=imported;state.selectedPattern=0}else{state.patterns.push(...imported);state.selectedPattern=state.patterns.length-imported.length}renderAll();setStatus(imported.length+' ritmo(s) importado(s).')}catch(e){setStatus('Não foi possível importar este arquivo.')}};reader.readAsText(file);input.value=''};input.click()}
@@ -325,10 +438,10 @@ ${buttonsCode()}
 document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(generatePluginCode());setStatus('Código copiado.')}catch(e){setStatus('Copie pelo preview.')}};document.getElementById('downloadBtn').onclick=()=>{const blob=new Blob([generatePluginCode()],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tropical Drum GL - Groove Lab.qml';document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();setStatus('Plugin .qml gerado.')};
 document.getElementById('playBtn').onclick=togglePlay;
 document.getElementById('stopBtn').onclick=()=>stopPlayback(true);
-document.getElementById('bpmSlider').oninput=e=>{player.bpm=Number(e.target.value);if(player.isPlaying){clearInterval(player.timer);player.timer=setInterval(schedulerTick,stepSeconds()*1000)}updatePlayerUI()};
-document.getElementById('progressSlider').oninput=e=>{player.currentStep=Number(e.target.value);highlightCurrentStep()};
-document.getElementById('progressSlider').onchange=async e=>{try{await ensureAudio();triggerStep(Number(e.target.value),0)}catch(err){}};
-document.getElementById('volumeSlider').oninput=e=>{player.volume=Number(e.target.value)/100;updatePlayerUI()};
+document.getElementById('bpmSlider').oninput=e=>{const wasPlaying=player.isPlaying;stopPlayback(false);player.bpm=Number(e.target.value);invalidateLoop();player.pausedAt=player.currentStep*stepSeconds();updatePlayerUI();if(wasPlaying)togglePlay()};
+document.getElementById('progressSlider').oninput=e=>{player.currentStep=Number(e.target.value);player.pausedAt=player.currentStep*stepSeconds();highlightCurrentStep()};
+document.getElementById('progressSlider').onchange=e=>{auditionStep(Number(e.target.value))};
+document.getElementById('volumeSlider').oninput=e=>{player.volume=Number(e.target.value)/100;if(player.gain)player.gain.gain.value=player.volume;updatePlayerUI()};
 seed();renderAll();
 </script>
 </body>
