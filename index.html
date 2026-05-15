@@ -1,25 +1,24 @@
-
 <!doctype html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tropical Drum GL (Groove Lab) Maker</title>
+<title>Tropical Drums GL (Groove Lab) Maker</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1115'/%3E%3Cellipse cx='32' cy='18' rx='18' ry='7' fill='%2374a7ff'/%3E%3Cpath d='M14 18v24c0 5 8 9 18 9s18-4 18-9V18' fill='%2377d7a8'/%3E%3Cellipse cx='32' cy='18' rx='18' ry='7' fill='none' stroke='%23f2f4f8' stroke-width='3'/%3E%3Cpath d='M20 46 14 56M44 46l6 10' stroke='%23f2f4f8' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 :root{--bg:#0f1115;--panel:#181b22;--panel2:#232833;--text:#f2f4f8;--muted:#a9b1c0;--line:#343b49;--accent:#77d7a8;--accent2:#74a7ff;--danger:#ff6f7d;--shadow:0 18px 55px rgba(0,0,0,.36);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(116,167,255,.18),transparent 30rem),radial-gradient(circle at 85% 8%,rgba(119,215,168,.15),transparent 26rem),var(--bg);color:var(--text)}
 header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);letter-spacing:-.035em}p{color:var(--muted);line-height:1.35;margin:6px 0}.layout{width:100%;padding:8px 16px 20px;display:grid;grid-template-columns:285px minmax(0,1fr);gap:12px;align-items:start}.panel{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.015)),var(--panel);border:1px solid rgba(255,255,255,.08);border-radius:16px;box-shadow:var(--shadow)}
-.sidebar{padding:10px;position:sticky;top:8px}.main{min-width:0}.below-seq{margin-top:10px;display:grid;grid-template-columns:1.15fr .85fr .85fr;gap:10px;align-items:start}.box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:9px;margin-bottom:8px}.title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}.row{display:flex;gap:6px;flex-wrap:wrap}.row>*{flex:1 1 96px}label{display:block;color:var(--muted);font-size:12px;margin:0 0 4px}input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 8px;outline:none}.btn{border:1px solid rgba(255,255,255,.1);border-radius:10px;background:var(--panel2);color:var(--text);padding:7px 9px;cursor:pointer}.btn:hover{background:#2a2f3b}.btn.primary{background:linear-gradient(180deg,#83e9b5,#53b983);color:#07140e;font-weight:800;border:0}.btn.blue{background:linear-gradient(180deg,#8db9ff,#5b8ee6);color:#061225;font-weight:800;border:0}.btn.danger{background:rgba(255,111,125,.13);border-color:rgba(255,111,125,.28);color:#ffd1d6}.btn.small{font-size:12px;padding:6px 8px}.btn.full{width:100%}.patterns{display:grid;grid-template-columns:1fr;gap:6px;max-height:380px;overflow:auto}.pattern{padding:7px 8px;background:var(--panel2);border:1px solid transparent;border-radius:10px;cursor:pointer}.pattern.active{border-color:var(--accent);background:rgba(119,215,168,.12)}.pattern b{display:block;font-size:13px}.pattern span{font-size:11px;color:var(--muted)}.status{font-size:12px;color:#dce9ff;background:rgba(116,167,255,.1);border:1px solid rgba(116,167,255,.18);border-radius:10px;padding:7px 8px;margin-top:6px}
-.seq-card{padding:10px}.seq-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.seq-head h2{font-size:16px;margin:0}.hint{font-size:12px;color:var(--muted)}.sequencer-wrap{width:100%;overflow:auto}.sequencer{width:100%;min-width:760px;display:grid;grid-template-columns:145px repeat(var(--steps),minmax(20px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#11141b}.corner,.step,.label,.cell{min-height:29px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}.corner,.step{background:#171b24;color:var(--muted);font-size:11px}.step.beat{color:var(--text);font-weight:800;background:rgba(255,255,255,.045)}.label{justify-content:space-between;padding:0 7px;background:#171b24;position:sticky;left:0;z-index:2;font-size:12px}.label span{color:var(--muted);font-size:10px}.cell{background:#151821;cursor:pointer}.cell.beat{background:#1a1f2a}.cell:hover{box-shadow:inset 0 0 0 2px rgba(116,167,255,.35)}.cell.on:after{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(180deg,var(--accent),#48b67d);box-shadow:0 0 14px rgba(119,215,168,.35)}.cell.strong:after{background:linear-gradient(180deg,#ff8a96,#e7475a);box-shadow:0 0 14px rgba(255,111,125,.38);transform:scale(1.12)}.cell.weak:after{background:linear-gradient(180deg,var(--accent2),#5b8ee6);box-shadow:0 0 14px rgba(116,167,255,.35);transform:scale(.92)}.bottom{margin-top:10px}.credits{text-align:center;padding:16px;color:#d5dae5;font-size:13px}.credits a{color:#d5f8ff;text-decoration:none;border-bottom:1px solid rgba(213,248,255,.45)}
-.player-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:end}.range-line{display:flex;align-items:center;gap:8px}.range-line input[type=range]{padding:0}.meter{height:8px;background:#10131a;border:1px solid var(--line);border-radius:999px;overflow:hidden}.meter span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent))}.step.beat,.cell.beat{border-left:1px solid rgba(255,255,255,.16)}.step.bar,.cell.bar{border-left:3px solid rgba(119,215,168,.72);box-shadow:inset 2px 0 0 rgba(0,0,0,.22)}.step.bar{background:rgba(119,215,168,.16);color:var(--text);font-weight:900}.cell.bar{background:#202838}.cell.playing{box-shadow:inset 0 0 0 2px #fff7,0 0 12px rgba(116,167,255,.35)}.cell.bar.playing{box-shadow:inset 3px 0 0 rgba(119,215,168,.9),inset 0 0 0 2px #fff7,0 0 12px rgba(116,167,255,.35)}.step.playing{background:rgba(116,167,255,.22);color:var(--text)}.step.bar.playing{background:linear-gradient(180deg,rgba(119,215,168,.28),rgba(116,167,255,.18));color:var(--text)}.btn.playing{background:linear-gradient(180deg,#ffd98d,#e6a85b);color:#241506;font-weight:800;border:0}@media(max-width:1100px){.player-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.player-grid{grid-template-columns:1fr}}
+.sidebar{padding:10px;position:sticky;top:8px}.main{min-width:0}.below-seq{margin-top:10px;display:grid;grid-template-columns:1.15fr .85fr .85fr;gap:10px;align-items:start}.box{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:9px;margin-bottom:8px}.title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 0 6px}.row{display:flex;gap:6px;flex-wrap:wrap}.row>*{flex:1 1 96px}label{display:block;color:var(--muted);font-size:12px;margin:0 0 4px}input,select{width:100%;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 8px;outline:none}.btn{border:1px solid rgba(255,255,255,.1);border-radius:10px;background:var(--panel2);color:var(--text);padding:7px 9px;cursor:pointer}.btn:hover{background:#2a2f3b}.btn.primary{background:linear-gradient(180deg,#83e9b5,#53b983);color:#07140e;font-weight:800;border:0}.btn.blue{background:linear-gradient(180deg,#8db9ff,#5b8ee6);color:#061225;font-weight:800;border:0}.btn.danger{background:rgba(255,111,125,.13);border-color:rgba(255,111,125,.28);color:#ffd1d6}.btn.small{font-size:12px;padding:6px 8px}.btn.full{width:100%}.patterns{display:grid;grid-template-columns:1fr;gap:6px;overflow:visible}.pattern{padding:7px 8px;background:var(--panel2);border:1px solid transparent;border-radius:10px;cursor:pointer}.pattern.active{border-color:var(--accent);background:rgba(119,215,168,.12)}.pattern b{display:block;font-size:13px}.pattern span{font-size:11px;color:var(--muted)}.status{font-size:12px;color:#dce9ff;background:rgba(116,167,255,.1);border:1px solid rgba(116,167,255,.18);border-radius:10px;padding:7px 8px;margin-top:6px}
+.seq-card{padding:10px}.seq-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.seq-head h2{font-size:16px;margin:0}.hint{font-size:12px;color:var(--muted)}.sequencer-wrap{width:100%;overflow:auto}.sequencer{width:100%;min-width:760px;display:grid;grid-template-columns:145px repeat(var(--steps),minmax(20px,1fr));border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#11141b}.corner,.step,.label,.cell{min-height:29px;border-right:1px solid rgba(255,255,255,.06);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center}.corner,.step{background:#171b24;color:var(--muted);font-size:11px}.step.beat{color:var(--text);font-weight:800;background:rgba(255,255,255,.045)}.label{justify-content:space-between;padding:0 7px;background:#171b24;position:sticky;left:0;z-index:2;font-size:12px}.label span{color:var(--muted);font-size:10px}.cell{background:#151821;cursor:pointer}.cell.beat{background:#151821}.cell:hover{box-shadow:inset 0 0 0 2px rgba(116,167,255,.35)}.cell.on{background:linear-gradient(180deg,rgba(119,215,168,.92),rgba(72,182,125,.92));box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}.cell.strong{background:linear-gradient(180deg,rgba(255,138,150,.95),rgba(231,71,90,.95));box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}.cell.weak{background:linear-gradient(180deg,rgba(116,167,255,.95),rgba(91,142,230,.95));box-shadow:inset 0 0 0 1px rgba(255,255,255,.22)}.bottom{margin-top:10px}.credits{text-align:center;padding:16px;color:#d5dae5;font-size:13px}.credits a{color:#d5f8ff;text-decoration:none;border-bottom:1px solid rgba(213,248,255,.45)}
+.player-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;align-items:end}.range-line{display:flex;align-items:center;gap:8px}.range-line input[type=range]{padding:0}.meter{height:8px;background:#10131a;border:1px solid var(--line);border-radius:999px;overflow:hidden}.meter span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent2),var(--accent))}.step.beat,.cell.beat{border-left:1px solid rgba(255,255,255,.16)}.step.bar,.cell.bar{border-left:3px solid rgba(119,215,168,.72);box-shadow:inset 2px 0 0 rgba(0,0,0,.22)}.step.bar{background:rgba(119,215,168,.16);color:var(--text);font-weight:900}.cell.bar:not(.on):not(.strong):not(.weak){background:#151821}.cell.playing{box-shadow:inset 0 0 0 2px #fff7,0 0 12px rgba(116,167,255,.35)}.cell.bar.playing{box-shadow:inset 3px 0 0 rgba(119,215,168,.9),inset 0 0 0 2px #fff7,0 0 12px rgba(116,167,255,.35)}.step.playing{background:rgba(116,167,255,.22);color:var(--text)}.step.bar.playing{background:linear-gradient(180deg,rgba(119,215,168,.28),rgba(116,167,255,.18));color:var(--text)}.btn.playing,.btn.active{background:linear-gradient(180deg,#ffd98d,#e6a85b);color:#241506;font-weight:800;border:0}.install-steps{margin:0;padding-left:20px;color:var(--muted);font-size:13px;line-height:1.45}.install-steps strong{color:var(--text)}@media(max-width:1100px){.player-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.player-grid{grid-template-columns:1fr}}
 @media(max-width:1100px){.below-seq{grid-template-columns:1fr 1fr}}@media(max-width:900px){.layout{grid-template-columns:1fr;padding:8px}.sidebar{position:static}.below-seq{grid-template-columns:1fr}.sequencer{min-width:680px}}
 </style>
 </head>
 <body>
 <header>
-<h1>Tropical Drum GL (Groove Lab) Maker</h1>
-<p>Sequenciador visual para criar ritmos de bateria e exportar o plugin MuseScore <strong>Tropical Drum GL (Groove Lab)</strong>.</p>
+<h1>Tropical Drums GL (Groove Lab) Maker</h1>
+<p>Sequenciador para criar ritmos de bateria e exportar como plugin para o MuseScore.</p>
 </header>
 <div class="layout">
 <aside class="panel sidebar">
@@ -33,7 +32,7 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
   <section class="panel seq-card">
     <div class="seq-head">
       <h2>Sequenciador</h2>
-      <div class="hint">De baixo para cima: bumbo, borda, caixa, chimbais, tons e pratos. A grade representa ataques; o plugin normaliza as durações.</div>
+      
     </div>
     <div class="sequencer-wrap"><div id="sequencer" class="sequencer"></div></div>
   </section>
@@ -52,13 +51,8 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
         <div class="range-line"><input id="bpmSlider" type="range" min="40" max="240" value="100" step="1"></div>
       </div>
       <div>
-        <label>Swing: <span id="swingValue">0</span>%</label>
-        <div class="range-line"><input id="swingSlider" type="range" min="0" max="75" value="0" step="1"></div>
-      </div>
-      <div>
-        <label>Progresso: passo <span id="stepValue">1</span>/<span id="stepTotal">16</span></label>
-        <input id="progressSlider" type="range" min="0" max="15" value="0" step="1">
-        <div class="meter" aria-hidden="true"><span id="progressMeter"></span></div>
+        <label>Swing</label>
+        <button class="btn full" id="swingBtn">Swing: desligado</button>
       </div>
       <div>
         <label>Volume: <span id="volumeValue">85</span>%</label>
@@ -86,6 +80,8 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
         <button class="btn small" id="clearBtn">Limpar</button>
         <button class="btn small" id="fillHihatBtn">Chimbal 8ªs</button>
         <button class="btn small" id="basicBeatBtn">Beat básico</button>
+        <button class="btn small" id="repeatBarBtn">Repetir compasso</button>
+        <button class="btn small" id="ride8Btn">Condução 8as</button>
       </div>
     </div>
     <div class="panel box">
@@ -95,7 +91,7 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
         <button class="btn small" id="importAddBtn">Importar adicionando</button>
         <button class="btn small" id="importReplaceBtn">Importar substituindo</button>
         <button class="btn blue small" id="downloadBtn">Baixar .qml</button>
-        <button class="btn small" id="copyBtn">Copiar código</button>
+        <button class="btn small" id="saveAudioBtn">Salvar como áudio</button>
       </div>
     </div>
   </section>
@@ -103,6 +99,17 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
     <div class="title">Mapa de bateria</div>
     <p class="hint">O plugin usa pitches MIDI GM. Em pauta de bateria do MuseScore, o resultado depende do mapa/percussão do instrumento selecionado.</p>
     <p class="hint"><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e7475a"></span> Forte (Ctrl) &nbsp;&nbsp; <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#77d7a8"></span> Normal &nbsp;&nbsp; <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#74a7ff"></span> Fraco (Shift)</p>
+  </section>
+
+  <section class="panel box bottom">
+    <div class="title">Como instalar o plugin gerado no MuseScore</div>
+    <ol class="install-steps">
+      <li>Clique em <strong>Baixar .qml</strong> para salvar o plugin.</li>
+      <li>No MuseScore, abra <strong>Plugins &gt; Gerenciador de plugins</strong> e use a opção de abrir/localizar a pasta de plugins.</li>
+      <li>Copie o arquivo <strong>.qml</strong> gerado para essa pasta.</li>
+      <li>Reinicie o MuseScore, volte ao gerenciador de plugins e habilite o plugin.</li>
+      <li>Abra uma partitura com pauta de bateria, selecione o ponto inicial e execute o plugin pelo menu <strong>Plugins</strong>.</li>
+    </ol>
   </section>
 </main>
 </div>
@@ -158,7 +165,7 @@ const player={
   startedAt:0,
   loopDuration:0,
   bpm:100,
-  swing:0,
+  swingMode:'off',
   volume:.85
 };
 
@@ -192,9 +199,24 @@ async function ensureAudio(){
 }
 function stepSeconds(){return (60/player.bpm)*(4/current().resolution)}
 function swingDelayForStep(step){
-  // Swing desloca levemente os passos ímpares para frente.
-  // 0% = reto; 50% = atraso de meia célula; 75% = swing bem acentuado.
-  return (step%2===1)?stepSeconds()*(player.swing/100):0;
+  if(player.swingMode==='off')return 0;
+  const p=current();
+  const base=stepSeconds();
+  if(player.swingMode==='16')return (step%2===1)?base*.33:0;
+  const eighthSteps=Math.max(1,Math.round(p.resolution/8));
+  const eighthIndex=Math.floor(step/eighthSteps);
+  return (eighthIndex%2===1)?base*eighthSteps*.33:0;
+}
+function swingLabel(){return player.swingMode==='off'?'Swing: desligado':(player.swingMode==='8'?'Swing: colcheias':'Swing: semicolcheias')}
+function cycleSwingMode(){
+  const wasPlaying=player.isPlaying;
+  stopPlayback(false);
+  player.swingMode=player.swingMode==='off'?'8':(player.swingMode==='8'?'16':'off');
+  invalidateLoop();
+  player.pausedAt=player.currentStep*stepSeconds();
+  updatePlayerUI();
+  setStatus(swingLabel()+'.');
+  if(wasPlaying)togglePlay();
 }
 function gainForIntensity(v){
   if(v===2)return 1.0;   // forte / Ctrl / vermelho
@@ -204,7 +226,7 @@ function gainForIntensity(v){
 function currentLoopKey(){
   const p=current();
   normalizePattern(p);
-  return JSON.stringify({pattern:p,bpm:player.bpm,swing:player.swing});
+  return JSON.stringify({pattern:p,bpm:player.bpm,swingMode:player.swingMode});
 }
 function allHitsForPattern(){
   const p=current();
@@ -236,6 +258,13 @@ async function renderLoopBuffer(){
     master.gain.value=0.88;
     master.connect(offline.destination);
     const hits=allHitsForPattern();
+    const hatCloseSteps=hits.filter(h=>h.id==='closedHat'||h.id==='pedalHat').map(h=>h.step).sort((a,b)=>a-b);
+    function openHatDuration(h,t,loopDur,stepDur){
+      if(h.id!=='openHat')return null;
+      const next=hatCloseSteps.find(s=>s>h.step);
+      if(next===undefined)return null;
+      return Math.max(0.03,Math.min(loopDur-t,(next-h.step)*stepDur+swingDelayForStep(next)-swingDelayForStep(h.step)));
+    }
     function scheduleHit(h,t){
       const buffer=player.buffers[h.id];
       if(!buffer)return;
@@ -244,7 +273,11 @@ async function renderLoopBuffer(){
       const g=offline.createGain();
       g.gain.value=gainForIntensity(h.intensity);
       src.connect(g).connect(master);
-      try{src.start(Math.max(0,t));}catch(e){}
+      try{
+        src.start(Math.max(0,t));
+        const choke=openHatDuration(h,t,loopDur,stepDur);
+        if(choke!==null)src.stop(Math.max(0,t)+choke);
+      }catch(e){}
     }
     hits.forEach(h=>{
       const t=Math.min(loopDur-0.001,h.step*stepDur+swingDelayForStep(h.step));
@@ -269,13 +302,9 @@ function invalidateLoop(){
 }
 function updatePlayerUI(){
   const p=current();const total=stepCountFor(p);if(player.currentStep>=total)player.currentStep=0;
-  const bpm=document.getElementById('bpmValue'),swing=document.getElementById('swingValue'),step=document.getElementById('stepValue'),tot=document.getElementById('stepTotal'),prog=document.getElementById('progressSlider'),meter=document.getElementById('progressMeter'),play=document.getElementById('playBtn'),vol=document.getElementById('volumeValue');
+  const bpm=document.getElementById('bpmValue'),swingBtn=document.getElementById('swingBtn'),play=document.getElementById('playBtn'),vol=document.getElementById('volumeValue');
   if(bpm)bpm.textContent=player.bpm;
-  if(swing)swing.textContent=player.swing;
-  if(step)step.textContent=String(player.currentStep+1);
-  if(tot)tot.textContent=String(total);
-  if(prog){prog.max=String(Math.max(0,total-1));prog.value=String(player.currentStep)}
-  if(meter)meter.style.width=(total<=1?'0':(player.currentStep/(total-1))*100)+'%';
+  if(swingBtn){swingBtn.textContent=swingLabel();swingBtn.classList.toggle('active',player.swingMode!=='off')}
   if(play){play.textContent=player.isPlaying?'⏸ Pausar':'▶ Tocar';play.classList.toggle('playing',player.isPlaying)}
   if(vol)vol.textContent=Math.round(player.volume*100);
 }
@@ -332,19 +361,18 @@ function stopPlayback(reset=true){
   if(reset){player.currentStep=0;player.pausedAt=0}
   highlightCurrentStep();
 }
-function auditionStep(step){
-  const wasPlaying=player.isPlaying;
-  if(wasPlaying)stopPlayback(false);
-  player.currentStep=step;
-  player.pausedAt=step*stepSeconds();
-  renderLoopBuffer().then(buffer=>{
+function playDrumNow(id,intensity){
+  ensureAudio().then(()=>{
     const ctx=makeAudioContext();
+    if(ctx.state==='suspended')ctx.resume();
+    const buffer=player.buffers[id];
+    if(!buffer)return;
     const src=ctx.createBufferSource();
     const g=ctx.createGain();
     src.buffer=buffer;
-    g.gain.value=player.volume;
+    g.gain.value=player.volume*gainForIntensity(intensity);
     src.connect(g).connect(ctx.destination);
-    src.start(0,player.pausedAt,Math.min(stepSeconds(),buffer.duration-player.pausedAt));
+    src.start();
   }).catch(()=>{});
 }
 
@@ -362,40 +390,18 @@ function addPreset(name,bars,resolution,timeSig,hits){
 }
 function allSteps(n){return Array.from({length:n},(_,i)=>i)}
 function evenSteps(n){const a=[];for(let i=0;i<n;i+=2)a.push(i);return a}
+function velocityToCellValue(velocity){return velocity>=100?2:(velocity<=60?3:1)}
+function addEventPresetData(data){
+  const p=makePattern(data.name,data.bars,data.resolution,data.timeSig);
+  data.events.forEach(e=>{
+    if(p.grid[e.id]&&e.step<p.grid[e.id].length)p.grid[e.id][e.step]=velocityToCellValue(e.velocity);
+  });
+  state.patterns.push(p);
+}
 function seed(){
-  addPreset('Bossa nova 4/4',1,16,'4/4',{kick:[0,6,10],rim:[3,7,10,14],closedHat:evenSteps(16),pedalHat:[4,12]});
-  addPreset('Bossa nova 2/4',1,16,'2/4',{kick:[0,3,6],rim:[2,5,7],closedHat:evenSteps(8),pedalHat:[4]});
-  addPreset('Baião',1,16,'2/4',{kick:{accent:[0],normal:[3,6]},floorTom:[0,6],rim:[2,5],closedHat:evenSteps(8)});
-  addPreset('Xote',1,16,'2/4',{kick:[0,4],rim:[2,6],closedHat:evenSteps(8),pedalHat:[4]});
-  addPreset('Axé',1,16,'4/4',{kick:[0,3,8,10,14],snare:[4,12],closedHat:allSteps(16),openHat:[7,15],crash:{accent:[0]}});
-  addPreset('Guarânia 3/4',1,16,'3/4',{kick:[0],rim:[4,8],closedHat:evenSteps(12),pedalHat:[4,8]});
-  addPreset('Valsa',1,16,'3/4',{kick:{accent:[0]},snare:[4,8],closedHat:evenSteps(12),ride:[0,4,8]});
-  addPreset('Rock ballad 6/8',1,8,'6/8',{kick:[0,3],snare:[3],closedHat:allSteps(6),crash:{accent:[0]}});
-  addPreset('Blues 12/8',1,8,'12/8',{kick:[0,6],snare:[3,9],ride:allSteps(12),pedalHat:[3,9]});
-  addPreset('Swing shuffle 12/8',1,8,'12/8',{kick:[0,6],snare:[3,9],ride:[0,2,3,5,6,8,9,11],pedalHat:[3,9]});
-  addPreset('Chorinho 2/4',1,16,'2/4',{kick:[0,4],rim:[2,3,6,7],closedHat:allSteps(8)});
-  addPreset('Sertanejo',1,16,'4/4',{kick:[0,6,8,14],snare:[4,12],closedHat:evenSteps(16),openHat:[15]});
-  addPreset('Country',1,16,'4/4',{kick:[0,8],snare:{accent:[4,12],normal:[2,6,10,14]},closedHat:evenSteps(16),ride:[0,4,8,12]});
-  addPreset('Funk',1,16,'4/4',{kick:[0,3,6,10,14],snare:[4,12],closedHat:allSteps(16),openHat:[7,15]});
-  addPreset('Funk brasileiro',1,16,'4/4',{kick:[0,3,6,9,12,15],floorTom:[0,6,12],snare:[4,10,14],closedHat:evenSteps(16)});
-  addPreset('Hip hop',1,16,'4/4',{kick:[0,6,10],snare:[4,12],closedHat:[0,2,4,6,7,8,10,12,14,15]});
-  addPreset('Frevo',1,16,'2/4',{kick:[0,4],snare:{accent:[0,4],normal:[1,2,3,5,6,7]},closedHat:allSteps(8),crash:{accent:[0]}});
-  addPreset('Maracatu',1,16,'4/4',{floorTom:{accent:[0,8],normal:[3,6,11,14]},kick:[0,8,11],snare:[4,12],closedHat:[0,4,8,12]});
-  addPreset('Marcha rancho',1,16,'2/4',{kick:[0,4],snare:[2,6],closedHat:evenSteps(8),crash:{accent:[0]}});
-  addPreset('Marcha militar',1,16,'2/4',{kick:[0,4],snare:{accent:[0,4],normal:[1,2,3,5,6,7]},closedHat:evenSteps(8),crash:{accent:[0]}});
-  addPreset('Polka',1,16,'2/4',{kick:[0,4],snare:[2,6],closedHat:evenSteps(8),ride:[0,2,4,6]});
-  addPreset('Jazz waltz 3/4',1,8,'3/4',{kick:[0],snare:[3,5],ride:[0,2,3,4,5],pedalHat:[2,4]});
-  addPreset('Rock 16s',1,16,'4/4',{kick:[0,6,8,11],snare:[4,12],closedHat:allSteps(16),crash:{accent:[0]}});
-  addPreset('Samba',1,16,'4/4',{kick:[0,3,6,8,11,14],rim:[4,12],closedHat:allSteps(16),pedalHat:[4,12]});
-  addPreset('Samba-reggae',1,16,'4/4',{floorTom:[0,6,8,14],kick:[0,8],snare:[4,10,12],closedHat:evenSteps(16),crash:{accent:[0]}});
-  addPreset('Afoxé / Ijexá',1,16,'4/4',{kick:[0,8],rim:[3,6,10,13],closedHat:evenSteps(16),pedalHat:[4,12]});
-  addPreset('Cateretê',1,16,'2/4',{kick:[0,4],rim:[1,3,5,7],closedHat:evenSteps(8)});
-  addPreset('Salsa / Cáscara',1,16,'4/4',{kick:[0,8],rim:[0,3,6,10,12,15],closedHat:evenSteps(16),pedalHat:[4,12]});
-  addPreset('Cumbia',1,16,'4/4',{kick:[0,6,8,14],rim:[4,12],closedHat:evenSteps(16),openHat:[7,15]});
-  addPreset('Merengue',1,16,'2/4',{kick:[0,4],snare:[2,6],closedHat:allSteps(8),ride:evenSteps(8)});
-  addPreset('Calypso',1,16,'4/4',{kick:[0,6,8,14],rim:[3,7,11,15],closedHat:evenSteps(16),openHat:[15]});
-  addPreset('Reggae one drop',1,16,'4/4',{kick:[8],snare:[8],closedHat:evenSteps(16),rim:[4,12]});
-  addPreset('Ska',1,16,'4/4',{kick:[0,8],snare:[4,12],closedHat:[2,6,10,14],ride:evenSteps(16)});
+  const presetData=[{"name":"Bossa nova 4/4","bars":2,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"rim","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":110},{"step":4,"id":"rim","velocity":110},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"rim","velocity":82},{"step":12,"id":"closedHat","velocity":110},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"rim","velocity":82},{"step":14,"id":"kick","velocity":82},{"step":16,"id":"closedHat","velocity":82},{"step":16,"id":"kick","velocity":82},{"step":18,"id":"closedHat","velocity":82},{"step":18,"id":"rim","velocity":82},{"step":20,"id":"closedHat","velocity":110},{"step":22,"id":"closedHat","velocity":82},{"step":22,"id":"rim","velocity":55},{"step":22,"id":"kick","velocity":82},{"step":24,"id":"closedHat","velocity":82},{"step":24,"id":"rim","velocity":82},{"step":24,"id":"kick","velocity":82},{"step":26,"id":"closedHat","velocity":82},{"step":26,"id":"rim","velocity":82},{"step":28,"id":"closedHat","velocity":110},{"step":28,"id":"rim","velocity":110},{"step":30,"id":"closedHat","velocity":82},{"step":30,"id":"kick","velocity":82}]},{"name":"Bossa nova 2/4","bars":2,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":55},{"step":0,"id":"rim","velocity":55},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":110},{"step":2,"id":"rim","velocity":110},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":5,"id":"rim","velocity":82},{"step":6,"id":"closedHat","velocity":110},{"step":7,"id":"closedHat","velocity":82},{"step":7,"id":"rim","velocity":82},{"step":7,"id":"kick","velocity":82},{"step":8,"id":"closedHat","velocity":55},{"step":8,"id":"kick","velocity":82},{"step":9,"id":"closedHat","velocity":82},{"step":9,"id":"rim","velocity":110},{"step":10,"id":"closedHat","velocity":110},{"step":11,"id":"closedHat","velocity":82},{"step":11,"id":"rim","velocity":82},{"step":11,"id":"kick","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"rim","velocity":55},{"step":12,"id":"kick","velocity":82},{"step":13,"id":"closedHat","velocity":82},{"step":14,"id":"closedHat","velocity":110},{"step":14,"id":"rim","velocity":82},{"step":15,"id":"closedHat","velocity":82},{"step":15,"id":"kick","velocity":82}]},{"name":"Baião","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"openHat","velocity":55},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"openHat","velocity":55},{"step":6,"id":"snare","velocity":110},{"step":7,"id":"closedHat","velocity":82}]},{"name":"Xote","bars":1,"resolution":8,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":110},{"step":3,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":110},{"step":7,"id":"closedHat","velocity":82}]},{"name":"Axé","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":7,"id":"snare","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"snare","velocity":82},{"step":11,"id":"snare","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"snare","velocity":82},{"step":15,"id":"snare","velocity":82}]},{"name":"Guarânia 3/4","bars":1,"resolution":16,"timeSig":"3/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"pedalHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"rim","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":8,"id":"pedalHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"rim","velocity":82},{"step":10,"id":"closedHat","velocity":82}]},{"name":"Valsa","bars":1,"resolution":16,"timeSig":"3/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"snare","velocity":82},{"step":10,"id":"closedHat","velocity":82}]},{"name":"Rock ballad 6/8","bars":1,"resolution":8,"timeSig":"6/8","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":5,"id":"kick","velocity":82}]},{"name":"Blues 12/8","bars":1,"resolution":8,"timeSig":"12/8","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"ride","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":3,"id":"ride","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"ride","velocity":82},{"step":5,"id":"ride","velocity":82},{"step":6,"id":"ride","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":7,"id":"ride","velocity":82},{"step":8,"id":"ride","velocity":82},{"step":9,"id":"ride","velocity":82},{"step":9,"id":"snare","velocity":82},{"step":10,"id":"ride","velocity":82},{"step":11,"id":"ride","velocity":82},{"step":11,"id":"kick","velocity":82}]},{"name":"Swing shuffle 12/8","bars":1,"resolution":8,"timeSig":"12/8","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":3,"id":"ride","velocity":82},{"step":3,"id":"pedalHat","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":5,"id":"ride","velocity":82},{"step":6,"id":"ride","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":8,"id":"ride","velocity":82},{"step":9,"id":"ride","velocity":82},{"step":9,"id":"pedalHat","velocity":82},{"step":9,"id":"snare","velocity":82},{"step":11,"id":"ride","velocity":82}]},{"name":"Chorinho 2/4","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":2,"id":"rim","velocity":55},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"rim","velocity":55},{"step":7,"id":"closedHat","velocity":82},{"step":7,"id":"kick","velocity":82}]},{"name":"Sertanejo","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"kick","velocity":82},{"step":15,"id":"openHat","velocity":82}]},{"name":"Country","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":110},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"snare","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":110},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"snare","velocity":82}]},{"name":"Funk","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":7,"id":"openHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":9,"id":"closedHat","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"kick","velocity":82},{"step":11,"id":"closedHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":13,"id":"closedHat","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"kick","velocity":82},{"step":15,"id":"openHat","velocity":82}]},{"name":"Funk brasileiro","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"snare","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"snare","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82}]},{"name":"Hip hop","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"ride","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":6,"id":"ride","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":8,"id":"ride","velocity":82},{"step":10,"id":"ride","velocity":82},{"step":10,"id":"kick","velocity":82},{"step":12,"id":"ride","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":13,"id":"kick","velocity":82},{"step":14,"id":"ride","velocity":82}]},{"name":"Frevo","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"pedalHat","velocity":82},{"step":0,"id":"snare","velocity":110},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":3,"id":"snare","velocity":55},{"step":4,"id":"pedalHat","velocity":82},{"step":4,"id":"snare","velocity":110},{"step":4,"id":"kick","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":7,"id":"snare","velocity":55}]},{"name":"Maracatu","bars":2,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"snare","velocity":55},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"snare","velocity":55},{"step":2,"id":"snare","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"pedalHat","velocity":82},{"step":4,"id":"snare","velocity":55},{"step":5,"id":"snare","velocity":55},{"step":6,"id":"snare","velocity":82},{"step":7,"id":"snare","velocity":82},{"step":8,"id":"snare","velocity":55},{"step":9,"id":"snare","velocity":55},{"step":10,"id":"snare","velocity":82},{"step":10,"id":"kick","velocity":82},{"step":11,"id":"snare","velocity":82},{"step":12,"id":"pedalHat","velocity":82},{"step":12,"id":"snare","velocity":55},{"step":13,"id":"snare","velocity":55},{"step":13,"id":"kick","velocity":82},{"step":14,"id":"snare","velocity":82},{"step":15,"id":"snare","velocity":82}]},{"name":"Marcha rancho","bars":2,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":9,"id":"snare","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":12,"id":"kick","velocity":82},{"step":14,"id":"closedHat","velocity":82}]},{"name":"Marcha militar","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"snare","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":110},{"step":4,"id":"kick","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":7,"id":"snare","velocity":82}]},{"name":"Polka","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82}]},{"name":"Jazz waltz 3/4","bars":1,"resolution":8,"timeSig":"3/4","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":2,"id":"pedalHat","velocity":82},{"step":3,"id":"ride","velocity":82},{"step":3,"id":"snare","velocity":82},{"step":4,"id":"ride","velocity":82},{"step":4,"id":"pedalHat","velocity":82},{"step":5,"id":"ride","velocity":82},{"step":5,"id":"snare","velocity":82}]},{"name":"Rock 16s","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"crash","velocity":110},{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":7,"id":"closedHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":9,"id":"closedHat","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":11,"id":"closedHat","velocity":82},{"step":11,"id":"kick","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":13,"id":"closedHat","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":15,"id":"closedHat","velocity":82}]},{"name":"Samba","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"closedHat","velocity":82},{"step":3,"id":"kick","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":7,"id":"closedHat","velocity":82},{"step":7,"id":"kick","velocity":82}]},{"name":"Samba-reggae","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"floorTom","velocity":82},{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":6,"id":"floorTom","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":8,"id":"floorTom","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"snare","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":14,"id":"floorTom","velocity":82},{"step":14,"id":"closedHat","velocity":82}]},{"name":"Afoxé / Ijexá","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"rim","velocity":82},{"step":4,"id":"pedalHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"rim","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"rim","velocity":82},{"step":12,"id":"pedalHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":13,"id":"rim","velocity":82},{"step":14,"id":"closedHat","velocity":82}]},{"name":"Cateretê","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"rim","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"rim","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":5,"id":"rim","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":7,"id":"rim","velocity":82}]},{"name":"Salsa / Cáscara","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"rim","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"rim","velocity":82},{"step":4,"id":"pedalHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"rim","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":10,"id":"rim","velocity":82},{"step":12,"id":"pedalHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"rim","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":15,"id":"rim","velocity":82}]},{"name":"Cumbia","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"rim","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":7,"id":"openHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"rim","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"kick","velocity":82},{"step":15,"id":"openHat","velocity":82}]},{"name":"Merengue","bars":1,"resolution":16,"timeSig":"2/4","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":1,"id":"closedHat","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":2,"id":"snare","velocity":82},{"step":3,"id":"closedHat","velocity":82},{"step":4,"id":"ride","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"kick","velocity":82},{"step":5,"id":"closedHat","velocity":82},{"step":6,"id":"ride","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"snare","velocity":82},{"step":7,"id":"closedHat","velocity":82}]},{"name":"Calypso","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":3,"id":"rim","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":6,"id":"kick","velocity":82},{"step":7,"id":"rim","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":11,"id":"rim","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":14,"id":"closedHat","velocity":82},{"step":14,"id":"kick","velocity":82},{"step":15,"id":"openHat","velocity":82},{"step":15,"id":"rim","velocity":82}]},{"name":"Reggae one drop","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"closedHat","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"closedHat","velocity":82},{"step":4,"id":"rim","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":8,"id":"closedHat","velocity":82},{"step":8,"id":"snare","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":12,"id":"closedHat","velocity":82},{"step":12,"id":"rim","velocity":82},{"step":14,"id":"closedHat","velocity":82}]},{"name":"Ska","bars":1,"resolution":16,"timeSig":"4/4","events":[{"step":0,"id":"ride","velocity":82},{"step":0,"id":"kick","velocity":82},{"step":2,"id":"ride","velocity":82},{"step":2,"id":"closedHat","velocity":82},{"step":4,"id":"ride","velocity":82},{"step":4,"id":"snare","velocity":82},{"step":6,"id":"ride","velocity":82},{"step":6,"id":"closedHat","velocity":82},{"step":8,"id":"ride","velocity":82},{"step":8,"id":"kick","velocity":82},{"step":10,"id":"ride","velocity":82},{"step":10,"id":"closedHat","velocity":82},{"step":12,"id":"ride","velocity":82},{"step":12,"id":"snare","velocity":82},{"step":14,"id":"ride","velocity":82},{"step":14,"id":"closedHat","velocity":82}]}];
+  state.patterns=[];
+  presetData.forEach(addEventPresetData);
   state.selectedPattern=0;
 }
 function current(){return state.patterns[state.selectedPattern]}
@@ -404,7 +410,7 @@ function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','
 function setStatus(s){document.getElementById('status').textContent=s}
 function renderList(){const list=document.getElementById('patternList');list.innerHTML='';state.patterns.forEach((p,i)=>{normalizePattern(p);const el=document.createElement('div');el.className='pattern'+(i===state.selectedPattern?' active':'');el.innerHTML='<b>'+esc(p.name)+'</b><span>'+p.bars+' comp. · '+p.timeSig+' · '+stepCountFor(p)+' passos · '+hitCount(p)+' notas</span>';el.onclick=()=>{state.selectedPattern=i;renderAll()};list.appendChild(el)})}
 function renderForm(){const p=current();document.getElementById('patternName').value=p.name;document.getElementById('barsSelect').value=String(p.bars);document.getElementById('timeSigSelect').value=p.timeSig;document.getElementById('resolutionSelect').value=String(p.resolution)}
-function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const barEvery=stepsPerBar(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;const bar=s%barEvery===0;html+='<div class="step '+(beat?'beat ':'')+(bar?'bar ':'')+(s===player.currentStep?'playing':'')+'" data-step="'+s+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;const bar=s%barEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(bar?'bar ':'')+(v?'on ':'')+(v===2?'strong ':'')+(v===3?'weak ':'')+(s===player.currentStep?'playing':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;let next=0;if(e.ctrlKey||e.metaKey){next=(old===2?0:2)}else if(e.shiftKey){next=(old===3?0:3)}else{next=(old===1?0:1)}p.grid[d][s]=next;invalidateLoop();renderAll();setStatus('Ritmo atualizado. O áudio do loop será remontado ao tocar.')}})}
+function renderSequencer(){const p=current();normalizePattern(p);const steps=stepCountFor(p);const beatEvery=beatInterval(p);const barEvery=stepsPerBar(p);const seq=document.getElementById('sequencer');seq.style.setProperty('--steps',steps);let html='<div class="corner">Peça / tempo</div>';for(let s=0;s<steps;s++){const beat=s%beatEvery===0;const bar=s%barEvery===0;html+='<div class="step '+(beat?'beat ':'')+(bar?'bar ':'')+(s===player.currentStep?'playing':'')+'" data-step="'+s+'">'+(beat?Math.floor(s/beatEvery)+1:'')+'</div>'}drums.forEach(d=>{html+='<div class="label"><b>'+d.name+'</b><span>'+d.short+' · '+d.pitch+'</span></div>';for(let s=0;s<steps;s++){const v=p.grid[d.id][s]||0;const beat=s%beatEvery===0;const bar=s%barEvery===0;html+='<div class="cell '+(beat?'beat ':'')+(bar?'bar ':'')+(v?'on ':'')+(v===2?'strong ':'')+(v===3?'weak ':'')+(s===player.currentStep?'playing':'')+'" data-drum="'+d.id+'" data-step="'+s+'"></div>'}});seq.innerHTML=html;seq.querySelectorAll('.cell').forEach(c=>{c.onclick=e=>{const p=current();const d=c.dataset.drum;const s=Number(c.dataset.step);const old=p.grid[d][s]||0;let next=0;if(e.ctrlKey||e.metaKey){next=(old===2?0:2)}else if(e.shiftKey){next=(old===3?0:3)}else{next=(old===1?0:1)}p.grid[d][s]=next;if(next)playDrumNow(d,next);invalidateLoop();renderAll();setStatus('Ritmo atualizado. O áudio do loop será remontado ao tocar.')}})}
 function renderAll(){renderList();renderForm();renderSequencer();updatePlayerUI()}
 function resizeGrid(msg){stopPlayback();invalidateLoop();const p=current();const old=JSON.parse(JSON.stringify(p.grid));const oldSteps=Object.values(old)[0]?.length||0;p.grid=emptyGrid(stepCountFor(p));drums.forEach(d=>{for(let i=0;i<Math.min(oldSteps,stepCountFor(p));i++)p.grid[d.id][i]=old[d.id]?.[i]||0});renderAll();setStatus(msg)}
 document.getElementById('patternName').oninput=e=>{current().name=e.target.value||'Sem nome';renderAll()};
@@ -417,6 +423,8 @@ document.getElementById('deletePatternBtn').onclick=()=>{if(state.patterns.lengt
 document.getElementById('clearBtn').onclick=()=>{stopPlayback();invalidateLoop();current().grid=emptyGrid(stepCountFor(current()));renderAll()};
 document.getElementById('fillHihatBtn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();const gap=p.resolution===16?2:1;for(let s=0;s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1;renderAll()};
 document.getElementById('basicBeatBtn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();p.grid=emptyGrid(stepCountFor(p));const bar=stepsPerBar(p);for(let b=0;b<p.bars;b++){const o=b*bar;p.grid.kick[o]=1;if(o+Math.floor(bar/2)<stepCountFor(p))p.grid.kick[o+Math.floor(bar/2)]=1;if(o+Math.floor(bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(bar/4)]=1;if(o+Math.floor(3*bar/4)<stepCountFor(p))p.grid.snare[o+Math.floor(3*bar/4)]=1;const gap=p.resolution===16?2:1;for(let s=o;s<o+bar&&s<stepCountFor(p);s+=gap)p.grid.closedHat[s]=1}p.grid.crash[0]=2;renderAll()};
+document.getElementById('repeatBarBtn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();if(p.bars<2)return setStatus('Use dois compassos para repetir o primeiro.');const bar=stepsPerBar(p);drums.forEach(d=>{for(let s=0;s<bar&&s+bar<stepCountFor(p);s++)p.grid[d.id][s+bar]=p.grid[d.id][s]||0});renderAll();setStatus('Primeiro compasso repetido no segundo.');};
+document.getElementById('ride8Btn').onclick=()=>{stopPlayback();invalidateLoop();const p=current();const gap=Math.max(1,Math.round(p.resolution/8));for(let s=0;s<stepCountFor(p);s+=gap)p.grid.ride[s]=1;renderAll();setStatus('Prato de condução inserido em colcheias.');};
 function encodeData(){return btoa(unescape(encodeURIComponent(JSON.stringify(state.patterns))))}
 function decodeData(s){return JSON.parse(decodeURIComponent(escape(atob(s))))}
 function importFile(mode){const input=document.getElementById('importFile');input.onchange=()=>{const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const text=String(reader.result||'');const marker='TROPICAL_DRUM_GL_DATA=';const idx=text.indexOf(marker);if(idx<0){setStatus('Arquivo sem dados importáveis deste gerador.');return}const line=text.substring(idx+marker.length).split(/\r?\n/)[0].trim();try{const imported=decodeData(line);if(mode==='replace'){state.patterns=imported;state.selectedPattern=0}else{state.patterns.push(...imported);state.selectedPattern=state.patterns.length-imported.length}renderAll();setStatus(imported.length+' ritmo(s) importado(s).')}catch(e){setStatus('Não foi possível importar este arquivo.')}};reader.readAsText(file);input.value=''};input.click()}
@@ -424,7 +432,7 @@ document.getElementById('importAddBtn').onclick=()=>importFile('add');document.g
 function q(s){return JSON.stringify(String(s))}function fn(name,i){return 'generate'+name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-zA-Z0-9]+/g,' ').trim().split(/\s+/).map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('')+'DrumPattern'+i}
 function eventsLiteral(p){const ev=[];for(let s=0;s<stepCountFor(p);s++)drums.forEach(d=>{const v=p.grid[d.id][s]||0;if(v)ev.push({step:s,pitch:d.pitch,accent:v===2,velocity:(v===2?110:(v===3?55:82)),name:d.name})});return '[\n'+ev.map(e=>'            { step: '+e.step+', pitch: '+e.pitch+', accent: '+(e.accent?'true':'false')+', velocity: '+e.velocity+', name: '+q(e.name)+' }').join(',\n')+'\n        ]'}
 function functionsCode(){return state.patterns.map((p,i)=>'    function '+fn(p.name,i)+'() {\n        generateDrumPattern('+q(p.name)+', '+p.bars+', '+stepsPerBar(p)+', '+p.resolution+', '+eventsLiteral(p)+', '+q(p.timeSig)+');\n    }').join('\n\n')}
-function buttonsCode(){return state.patterns.map((p,i)=>'                Button { text: '+q(p.name)+'; font.pixelSize: 9; font.bold: true; Layout.fillWidth: true; Layout.preferredHeight: 28; onClicked: '+fn(p.name,i)+'() }').join('\n')}
+function buttonsCode(){return state.patterns.map((p,i)=>'                Button { text: '+q(p.name)+'; font.pixelSize: 8; font.bold: true; Layout.preferredWidth: 104; Layout.fillWidth: true; Layout.preferredHeight: 28; onClicked: '+fn(p.name,i)+'() }').join('\n')}
 function generatePluginCode(){return `// TROPICAL_DRUM_GL_DATA=${encodeData()}
 import MuseScore 3.0
 import QtQuick 2.15
@@ -432,12 +440,12 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
 MuseScore {
-    menuPath: "Plugins.Tropical Drum GL (Groove Lab)"
-    description: "Tropical Drum GL (Groove Lab). Gera ritmos de bateria criados no Tropical Drum GL Maker. Desenvolvido pelo professor Glauber Santiago - UFSCar."
-    version: "1.0"
+    menuPath: "Plugins.Tropical Drums GL (Groove Lab)"
+    description: "Tropical Drums GL (Groove Lab). Gera ritmos de bateria criados no Tropical Drums GL Maker. Desenvolvido pelo professor Glauber Santiago - UFSCar."
+    version: "1.2"
     requiresScore: true
     pluginType: "dialog"
-    width: 390
+    width: 360
     height: 700
     property string statusText: "Selecione o ponto inicial em uma pauta de bateria e clique em um ritmo."
     function setupCursorAtSelection() { var cursor = curScore.newCursor(); cursor.rewind(1); return cursor; }
@@ -445,21 +453,53 @@ MuseScore {
     function durationFromSteps(stepCount, stepDenominator){ var d=gcd(stepCount, stepDenominator); return { z: stepCount/d, n: stepDenominator/d }; }
     function hitsAtStep(events, step){ var hits=[]; for(var i=0;i<events.length;i++) if(events[i].step===step) hits.push(events[i]); return hits; }
     function nextHitStep(events,currentStep,endStep){ var next=endStep; for(var i=0;i<events.length;i++){ var s=events[i].step; if(s>currentStep && s<next) next=s; } return next; }
-    function addDrumChordAtCursor(cursor, track, hits, durationZ, durationN){ var startTick=cursor.tick; cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addNote(hits[0].pitch,false); for(var i=1;i<hits.length;i++){ cursor.rewindToTick(startTick); cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addNote(hits[i].pitch,true); } cursor.rewindToTick(startTick); cursor.track=track; cursor.next(); }
+    function addDrumChordAtCursor(cursor, track, hits, durationZ, durationN){ cursor.track=track; cursor.setDuration(durationZ,durationN); for(var i=0;i<hits.length;i++){ cursor.addNote(hits[i].pitch, i>0); } }
     function addRestAtCursor(cursor, track, durationZ, durationN){ cursor.track=track; cursor.setDuration(durationZ,durationN); cursor.addRest(); }
-    function generateDrumPattern(label,bars,stepsPerBar,stepDenominator,events,timeSig){ if(!curScore){statusText="Nenhuma partitura aberta.";return;} var cursor=setupCursorAtSelection(); var track=cursor.track; var endStep=bars*stepsPerBar; var inserted=0; var step=0; curScore.startCmd(); while(step<endStep){ var hits=hitsAtStep(events,step); var nextStep=nextHitStep(events,step,endStep); var gap=nextStep-step; if(gap<=0)gap=1; var dur=durationFromSteps(gap,stepDenominator); if(hits.length>0){ addDrumChordAtCursor(cursor,track,hits,dur.z,dur.n); inserted+=hits.length; } else { addRestAtCursor(cursor,track,dur.z,dur.n); } step=nextStep; } curScore.endCmd(); statusText=label+": "+inserted+" notas de bateria inseridas."; }
+    function nextBarBoundary(step, stepsPerBar, endStep){ var boundary=(Math.floor(step/stepsPerBar)+1)*stepsPerBar; return Math.min(boundary,endStep); }
+    function nextChangeStep(events,currentStep,endStep,stepsPerBar){ var next=nextBarBoundary(currentStep,stepsPerBar,endStep); for(var i=0;i<events.length;i++){ var s=events[i].step; if(s>currentStep && s<next) next=s; } return next; }
+    function generateDrumPattern(label,bars,stepsPerBar,stepDenominator,events,timeSig){ if(!curScore){statusText="Nenhuma partitura aberta.";return;} var cursor=setupCursorAtSelection(); var track=cursor.track; var endStep=bars*stepsPerBar; var inserted=0; var step=0; curScore.startCmd(); while(step<endStep){ var hits=hitsAtStep(events,step); var nextStep=nextChangeStep(events,step,endStep,stepsPerBar); var gap=nextStep-step; if(gap<=0)gap=1; var dur=durationFromSteps(gap,stepDenominator); if(hits.length>0){ addDrumChordAtCursor(cursor,track,hits,dur.z,dur.n); inserted+=hits.length; } else { addRestAtCursor(cursor,track,dur.z,dur.n); } step=nextStep; } curScore.endCmd(); statusText=label+": "+inserted+" notas de bateria inseridas com durações fundidas."; }
 ${functionsCode()}
-    Rectangle { anchors.fill: parent; color: "#ECECEC"; ColumnLayout { anchors.fill: parent; anchors.margins: 8; spacing: 5; Label { text: "Tropical Drum GL (Groove Lab)"; font.bold: true; font.pixelSize: 12; Layout.alignment: Qt.AlignHCenter } Label { text: "Desenvolvido pelo professor Glauber Santiago - UFSCar"; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; color: "#666"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } Rectangle { height: 1; color: "#D0D0D0"; Layout.fillWidth: true } Label { text: "Ritmos de bateria"; font.bold: true; Layout.fillWidth: true } ScrollView { Layout.fillWidth: true; Layout.fillHeight: true; clip: true; ColumnLayout { width: parent.width; spacing: 5;
+    Rectangle { anchors.fill: parent; color: "#ECECEC"; ColumnLayout { anchors.fill: parent; anchors.margins: 8; spacing: 5; Label { text: "Tropical Drums GL (Groove Lab)"; font.bold: true; font.pixelSize: 12; Layout.alignment: Qt.AlignHCenter } Label { text: "Desenvolvido pelo professor Glauber Santiago - UFSCar"; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 8; color: "#666"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } Rectangle { height: 1; color: "#D0D0D0"; Layout.fillWidth: true } Label { text: "Ritmos de bateria"; font.bold: true; Layout.fillWidth: true } ScrollView { Layout.fillWidth: true; Layout.fillHeight: true; clip: true; GridLayout { width: parent.width; columns: 3; columnSpacing: 5; rowSpacing: 5;
 ${buttonsCode()}
     } } Label { text: statusText; wrapMode: Text.WordWrap; horizontalAlignment: Text.AlignHCenter; font.pixelSize: 9; color: "#555"; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter } } }
 }`}
-document.getElementById('copyBtn').onclick=async()=>{try{await navigator.clipboard.writeText(generatePluginCode());setStatus('Código copiado.')}catch(e){setStatus('Copie pelo preview.')}};document.getElementById('downloadBtn').onclick=()=>{const blob=new Blob([generatePluginCode()],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tropical Drum GL - Groove Lab.qml';document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();setStatus('Plugin .qml gerado.')};
+function audioBufferToWav(buffer){
+  const channels=buffer.numberOfChannels, sampleRate=buffer.sampleRate, length=buffer.length;
+  const bytesPerSample=2, blockAlign=channels*bytesPerSample;
+  const dataSize=length*blockAlign;
+  const ab=new ArrayBuffer(44+dataSize);
+  const view=new DataView(ab);
+  function writeStr(o,str){for(let i=0;i<str.length;i++)view.setUint8(o+i,str.charCodeAt(i));}
+  writeStr(0,'RIFF');view.setUint32(4,36+dataSize,true);writeStr(8,'WAVE');writeStr(12,'fmt ');
+  view.setUint32(16,16,true);view.setUint16(20,1,true);view.setUint16(22,channels,true);view.setUint32(24,sampleRate,true);view.setUint32(28,sampleRate*blockAlign,true);view.setUint16(32,blockAlign,true);view.setUint16(34,16,true);writeStr(36,'data');view.setUint32(40,dataSize,true);
+  let offset=44;
+  for(let i=0;i<length;i++){
+    for(let ch=0;ch<channels;ch++){
+      let sample=buffer.getChannelData(ch)[i];
+      sample=Math.max(-1,Math.min(1,sample));
+      view.setInt16(offset,sample<0?sample*0x8000:sample*0x7fff,true);
+      offset+=2;
+    }
+  }
+  return new Blob([ab],{type:'audio/wav'});
+}
+async function saveLoopAsAudio(){
+  try{
+    stopPlayback(false);
+    const buffer=await renderLoopBuffer();
+    const blob=audioBufferToWav(buffer);
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=(current().name||'ritmo').replace(/[^a-z0-9\-_]+/gi,'_')+'.wav';
+    document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();
+    setStatus('Áudio WAV salvo.');
+  }catch(e){setStatus('Não foi possível salvar o áudio. Verifique se os sons carregaram.');}
+}
+document.getElementById('saveAudioBtn').onclick=saveLoopAsAudio;document.getElementById('downloadBtn').onclick=()=>{const blob=new Blob([generatePluginCode()],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Tropical Drums GL - Groove Lab.qml';document.body.appendChild(a);a.click();URL.revokeObjectURL(a.href);a.remove();setStatus('Plugin .qml gerado.')};
 document.getElementById('playBtn').onclick=togglePlay;
 document.getElementById('stopBtn').onclick=()=>stopPlayback(true);
 document.getElementById('bpmSlider').oninput=e=>{const wasPlaying=player.isPlaying;stopPlayback(false);player.bpm=Number(e.target.value);invalidateLoop();player.pausedAt=player.currentStep*stepSeconds();updatePlayerUI();if(wasPlaying)togglePlay()};
-document.getElementById('swingSlider').oninput=e=>{const wasPlaying=player.isPlaying;stopPlayback(false);player.swing=Number(e.target.value);invalidateLoop();player.pausedAt=player.currentStep*stepSeconds();updatePlayerUI();if(wasPlaying)togglePlay()};
-document.getElementById('progressSlider').oninput=e=>{player.currentStep=Number(e.target.value);player.pausedAt=player.currentStep*stepSeconds();highlightCurrentStep()};
-document.getElementById('progressSlider').onchange=e=>{auditionStep(Number(e.target.value))};
+document.getElementById('swingBtn').onclick=cycleSwingMode;
 document.getElementById('volumeSlider').oninput=e=>{player.volume=Number(e.target.value)/100;if(player.gain)player.gain.gain.value=player.volume;updatePlayerUI()};
 seed();renderAll();
 </script>
