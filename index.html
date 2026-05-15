@@ -119,46 +119,66 @@ function stepCountFor(p){return p.bars*stepsPerBar(p)}
 function normalizePattern(p){if(!p.timeSig)p.timeSig='4/4';const steps=stepCountFor(p);drums.forEach(d=>{if(!p.grid[d.id])p.grid[d.id]=[];while(p.grid[d.id].length<steps)p.grid[d.id].push(0);if(p.grid[d.id].length>steps)p.grid[d.id]=p.grid[d.id].slice(0,steps)})}
 function setHits(p,id,arr,val=1){arr.forEach(s=>{if(p.grid[id]&&s<p.grid[id].length)p.grid[id][s]=val})}
 let state={selectedPattern:0,patterns:[]};
-const soundUrls={
-  kick:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/36.mp3',
-  rim:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/37.mp3',
-  snare:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/38.mp3',
-  closedHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/42.mp3',
-  pedalHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/44.mp3',
-  openHat:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/46.mp3',
-  floorTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/41.mp3',
-  lowTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/45.mp3',
-  highTom:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/50.mp3',
-  ride:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/51.mp3',
-  crash:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/49.mp3',
-  splash:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/55.mp3'
+const soundNumbers={
+  kick:'36', rim:'37', snare:'38', closedHat:'42', pedalHat:'44', openHat:'46',
+  floorTom:'41', lowTom:'45', highTom:'50', ride:'51', crash:'49', splash:'55'
 };
-const player={ctx:null,buffers:{},loading:null,isPlaying:false,currentStep:0,timer:null,nextTime:0,lookahead:null,bpm:100,volume:.85};
+function soundCandidates(id){
+  const n=soundNumbers[id];
+  return [
+    'https://cdn.jsdelivr.net/gh/GlauberLASantiago/tropical-drum-gl-maker@main/'+n+'.mp3',
+    'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/'+n+'.mp3',
+    'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/raw/main/'+n+'.mp3'
+  ];
+}
+const player={audios:{},loading:null,isPlaying:false,currentStep:0,timer:null,bpm:100,volume:.85};
 function setAudioStatus(s){const el=document.getElementById('audioStatus');if(el)el.textContent=s}
+function loadOneAudio(id,url){
+  return new Promise((resolve,reject)=>{
+    const a=new Audio();
+    a.preload='auto';
+    a.crossOrigin='anonymous';
+    a.src=url;
+    const done=()=>{cleanup();resolve(a)};
+    const fail=()=>{cleanup();reject(new Error(url))};
+    const cleanup=()=>{a.removeEventListener('canplaythrough',done);a.removeEventListener('loadeddata',done);a.removeEventListener('error',fail)};
+    a.addEventListener('canplaythrough',done,{once:true});
+    a.addEventListener('loadeddata',done,{once:true});
+    a.addEventListener('error',fail,{once:true});
+    a.load();
+    setTimeout(()=>{ if(a.readyState>=2) done(); }, 2500);
+  });
+}
+async function loadWithFallback(id){
+  let lastErr=null;
+  for(const url of soundCandidates(id)){
+    try{return await loadOneAudio(id,url)}catch(e){lastErr=e}
+  }
+  throw lastErr||new Error('som indisponível');
+}
 async function ensureAudio(){
   if(player.loading)return player.loading;
-  if(Object.keys(player.buffers).length===drums.length)return Promise.resolve();
+  if(Object.keys(player.audios).length===drums.length)return Promise.resolve();
   player.loading=(async()=>{
-    player.ctx=player.ctx||new (window.AudioContext||window.webkitAudioContext)();
     setAudioStatus('Carregando sons de bateria...');
-    await Promise.all(drums.map(async d=>{
-      const response=await fetch(soundUrls[d.id]);
-      if(!response.ok)throw new Error('Falha ao carregar '+d.name);
-      const data=await response.arrayBuffer();
-      player.buffers[d.id]=await player.ctx.decodeAudioData(data);
-    }));
+    for(const d of drums){
+      if(!player.audios[d.id]){
+        try{player.audios[d.id]=await loadWithFallback(d.id)}
+        catch(e){throw new Error('Falha ao carregar '+d.name+'. Abra o console para detalhes.');}
+      }
+    }
     setAudioStatus('Sons carregados. Pronto para tocar.');
   })().catch(err=>{player.loading=null;setAudioStatus('Erro ao carregar sons: '+err.message);throw err});
   return player.loading;
 }
 function playDrum(id,when=0,accent=false){
-  if(!player.ctx||!player.buffers[id])return;
-  const src=player.ctx.createBufferSource();
-  const gain=player.ctx.createGain();
-  src.buffer=player.buffers[id];
-  gain.gain.value=player.volume*(accent?1:0.78);
-  src.connect(gain).connect(player.ctx.destination);
-  src.start(when);
+  const base=player.audios[id];
+  if(!base)return;
+  const a=base.cloneNode(true);
+  a.volume=Math.max(0,Math.min(1,player.volume*(accent?1:0.78)));
+  a.currentTime=0;
+  const play=()=>a.play().catch(()=>{});
+  if(when>0)setTimeout(play,when*1000);else play();
 }
 function stepSeconds(){return (60/player.bpm)*(4/current().resolution)}
 function triggerStep(step,when=0){
@@ -190,8 +210,8 @@ function schedulerTick(){
 }
 async function togglePlay(){
   if(player.isPlaying){stopPlayback(false);return}
-  try{await ensureAudio();await player.ctx.resume();player.isPlaying=true;updatePlayerUI();schedulerTick();player.timer=setInterval(schedulerTick,stepSeconds()*1000)}
-  catch(e){setStatus('Não foi possível iniciar o player. Verifique a conexão com os arquivos MP3.')}
+  try{await ensureAudio();player.isPlaying=true;updatePlayerUI();schedulerTick();player.timer=setInterval(schedulerTick,stepSeconds()*1000)}
+  catch(e){setStatus('Não foi possível iniciar o player. Verifique a conexão com os arquivos MP3.');}
 }
 function stopPlayback(reset=true){
   player.isPlaying=false;
