@@ -119,28 +119,35 @@ function stepCountFor(p){return p.bars*stepsPerBar(p)}
 function normalizePattern(p){if(!p.timeSig)p.timeSig='4/4';const steps=stepCountFor(p);drums.forEach(d=>{if(!p.grid[d.id])p.grid[d.id]=[];while(p.grid[d.id].length<steps)p.grid[d.id].push(0);if(p.grid[d.id].length>steps)p.grid[d.id]=p.grid[d.id].slice(0,steps)})}
 function setHits(p,id,arr,val=1){arr.forEach(s=>{if(p.grid[id]&&s<p.grid[id].length)p.grid[id][s]=val})}
 let state={selectedPattern:0,patterns:[]};
-const soundNumbers={
-  kick:'36', rim:'37', snare:'38', closedHat:'42', pedalHat:'44', openHat:'46',
-  floorTom:'41', lowTom:'45', highTom:'50', ride:'51', crash:'49', splash:'55'
+const drumSoundLinks={
+  kick:{name:'Bumbo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/36.mp3'},
+  rim:{name:'Borda',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/37.mp3'},
+  snare:{name:'Caixa',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/38.mp3'},
+  closedHat:{name:'Chimbal fechado',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/42.mp3'},
+  pedalHat:{name:'Chimbal pé',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/44.mp3'},
+  openHat:{name:'Chimbal aberto',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/46.mp3'},
+  floorTom:{name:'Surdo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/41.mp3'},
+  lowTom:{name:'Tom grave',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/45.mp3'},
+  highTom:{name:'Tom agudo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/50.mp3'},
+  ride:{name:'Prato de condução',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/51.mp3'},
+  crash:{name:'Prato de ataque',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/49.mp3'},
+  splash:{name:'Splash',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/55.mp3'}
 };
-function soundCandidates(id){
-  const n=soundNumbers[id];
-  return [
-    'https://cdn.jsdelivr.net/gh/GlauberLASantiago/tropical-drum-gl-maker@main/'+n+'.mp3',
-    'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/'+n+'.mp3',
-    'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/raw/main/'+n+'.mp3'
-  ];
+function audioUrlForDrum(id){
+  const item=drumSoundLinks[id];
+  if(!item)throw new Error('Sem link de áudio para '+id);
+  return item.url+'?raw=1';
 }
 const player={audios:{},loading:null,isPlaying:false,currentStep:0,timer:null,bpm:100,volume:.85};
 function setAudioStatus(s){const el=document.getElementById('audioStatus');if(el)el.textContent=s}
-function loadOneAudio(id,url){
+function loadOneAudio(id){
   return new Promise((resolve,reject)=>{
+    const item=drumSoundLinks[id];
     const a=new Audio();
     a.preload='auto';
-    a.crossOrigin='anonymous';
-    a.src=url;
+    a.src=audioUrlForDrum(id);
     const done=()=>{cleanup();resolve(a)};
-    const fail=()=>{cleanup();reject(new Error(url))};
+    const fail=()=>{cleanup();reject(new Error('Falha ao carregar '+item.name+' em '+item.url))};
     const cleanup=()=>{a.removeEventListener('canplaythrough',done);a.removeEventListener('loadeddata',done);a.removeEventListener('error',fail)};
     a.addEventListener('canplaythrough',done,{once:true});
     a.addEventListener('loadeddata',done,{once:true});
@@ -149,23 +156,13 @@ function loadOneAudio(id,url){
     setTimeout(()=>{ if(a.readyState>=2) done(); }, 2500);
   });
 }
-async function loadWithFallback(id){
-  let lastErr=null;
-  for(const url of soundCandidates(id)){
-    try{return await loadOneAudio(id,url)}catch(e){lastErr=e}
-  }
-  throw lastErr||new Error('som indisponível');
-}
 async function ensureAudio(){
   if(player.loading)return player.loading;
   if(Object.keys(player.audios).length===drums.length)return Promise.resolve();
   player.loading=(async()=>{
     setAudioStatus('Carregando sons de bateria...');
     for(const d of drums){
-      if(!player.audios[d.id]){
-        try{player.audios[d.id]=await loadWithFallback(d.id)}
-        catch(e){throw new Error('Falha ao carregar '+d.name+'. Abra o console para detalhes.');}
-      }
+      if(!player.audios[d.id])player.audios[d.id]=await loadOneAudio(d.id);
     }
     setAudioStatus('Sons carregados. Pronto para tocar.');
   })().catch(err=>{player.loading=null;setAudioStatus('Erro ao carregar sons: '+err.message);throw err});
