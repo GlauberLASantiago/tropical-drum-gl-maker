@@ -61,7 +61,7 @@ header{padding:16px 16px 8px}h1{margin:0 0 4px;font-size:clamp(24px,3vw,38px);le
         <input id="volumeSlider" type="range" min="0" max="100" value="85" step="1">
       </div>
     </div>
-    <p class="hint" id="audioStatus">O primeiro toque carrega os MP3 e monta um áudio único em loop para reduzir cortes e imprecisão.</p>
+    <p class="hint" id="audioStatus">O primeiro toque carrega os MP3 por URLs raw diretas e monta um áudio único em loop para reduzir cortes e imprecisão.</p>
   </section>
   <section class="below-seq">
     <div class="panel box">
@@ -120,23 +120,23 @@ function normalizePattern(p){if(!p.timeSig)p.timeSig='4/4';const steps=stepCount
 function setHits(p,id,arr,val=1){arr.forEach(s=>{if(p.grid[id]&&s<p.grid[id].length)p.grid[id][s]=val})}
 let state={selectedPattern:0,patterns:[]};
 const drumSoundLinks={
-  kick:{name:'Bumbo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/36.mp3'},
-  rim:{name:'Borda',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/37.mp3'},
-  snare:{name:'Caixa',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/38.mp3'},
-  closedHat:{name:'Chimbal fechado',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/42.mp3'},
-  pedalHat:{name:'Chimbal pé',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/44.mp3'},
-  openHat:{name:'Chimbal aberto',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/46.mp3'},
-  floorTom:{name:'Surdo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/41.mp3'},
-  lowTom:{name:'Tom grave',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/45.mp3'},
-  highTom:{name:'Tom agudo',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/50.mp3'},
-  ride:{name:'Prato de condução',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/51.mp3'},
-  crash:{name:'Prato de ataque',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/49.mp3'},
-  splash:{name:'Splash',url:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/55.mp3'}
+  kick:{name:'Bumbo',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/36.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/36.mp3'},
+  rim:{name:'Borda',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/37.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/37.mp3'},
+  snare:{name:'Caixa',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/38.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/38.mp3'},
+  closedHat:{name:'Chimbal fechado',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/42.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/42.mp3'},
+  pedalHat:{name:'Chimbal pé',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/44.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/44.mp3'},
+  openHat:{name:'Chimbal aberto',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/46.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/46.mp3'},
+  floorTom:{name:'Surdo',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/41.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/41.mp3'},
+  lowTom:{name:'Tom grave',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/45.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/45.mp3'},
+  highTom:{name:'Tom agudo',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/50.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/50.mp3'},
+  ride:{name:'Prato de condução',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/51.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/51.mp3'},
+  crash:{name:'Prato de ataque',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/49.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/49.mp3'},
+  splash:{name:'Splash',github:'https://github.com/GlauberLASantiago/tropical-drum-gl-maker/blob/main/55.mp3',mp3:'https://raw.githubusercontent.com/GlauberLASantiago/tropical-drum-gl-maker/main/55.mp3'}
 };
 function audioUrlForDrum(id){
   const item=drumSoundLinks[id];
   if(!item)throw new Error('Sem link de áudio para '+id);
-  return item.url+'?raw=1';
+  return item.mp3;
 }
 const player={
   ctx:null,
@@ -156,6 +156,7 @@ const player={
   bpm:100,
   volume:.85
 };
+
 function setAudioStatus(s){const el=document.getElementById('audioStatus');if(el)el.textContent=s}
 function makeAudioContext(){
   const AC=window.AudioContext||window.webkitAudioContext;
