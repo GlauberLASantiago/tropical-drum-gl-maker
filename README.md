@@ -1,4 +1,4 @@
-# Tropical Drum GL (Groove Lab) Maker
+# Tropical Drums GL (Groove Lab) Maker
 
 Sequenciador visual em HTML para criar ritmos de bateria e exportar padrões compatíveis com o plugin **Tropical Drum GL (Groove Lab)** no MuseScore.
 
